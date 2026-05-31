@@ -1,3 +1,5 @@
+use std::io;
+
 fn tuple_type() {
     // Groups together number of values with multiple types
     let tup: (i32, f64, u8) = (500, 6.4, 1);
@@ -25,10 +27,46 @@ fn tuple_type() {
     println!("The value of my_unit is {my_unit:?}");
 }
 
-fn array_types() {
-    // TODO: left off here
-    // https://doc.rust-lang.org/book/ch03-02-data-types.html#the-array-type
+fn array_out_of_bounds_program() {
+    let a = [1, 2, 3, 4, 5];
 
+    println!("Please entere an array index.");
+
+    let mut index = String::new();
+
+    io::stdin()
+        .read_line(&mut index)
+        .expect("Failed to read line");
+
+    let index: usize = index
+        .trim()
+        .parse()
+        .expect("Index entered was not a number");
+
+    // could be out of bounds
+    let element = a[index];
+
+    println!("The value at element {index} is: {element}");
+}
+
+fn array_types() {
+    // arrays have fixed length
+    // items in array have same type
+    // data allocated on stack, not heap
+    // vector type is on heap. more flexible, can grow/shrink
+    let a = [1, 2, 3, 4, 5];
+    let b: [i32; 5] = [1, 2, 3, 4, 5]; // define with type
+    let c = [3; 5]; // creates [3, 3, 3, 3, 3]
+
+    // access
+    let first_a = a[0];
+    let first_b = b[0];
+    let first_c = c[0];
+    println!("first a: {first_a}");
+    println!("first b: {first_b}");
+    println!("first a: {first_c}");
+
+    array_out_of_bounds_program();
 }
 
 fn main() {
