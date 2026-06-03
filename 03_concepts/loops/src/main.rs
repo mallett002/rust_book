@@ -9,6 +9,11 @@ fn main() {
     while_loops();
     looping_through_collections();
     alternative_to_while_is_range();
+
+    // TODO:
+    // Convert temperatures between Fahrenheit and Celsius.
+    // Generate the nth Fibonacci number.
+    // Print the lyrics to the Christmas carol “The Twelve Days of Christmas,” taking advantage of the repetition in the song.
 }
 
 fn returning_values_from_loops() {
