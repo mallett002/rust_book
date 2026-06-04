@@ -9,9 +9,9 @@ fn main() {
     while_loops();
     looping_through_collections();
     alternative_to_while_is_range();
+    temps_program();
 
     // TODO:
-    // Convert temperatures between Fahrenheit and Celsius.
     // Generate the nth Fibonacci number.
     // Print the lyrics to the Christmas carol “The Twelve Days of Christmas,” taking advantage of the repetition in the song.
 }
@@ -109,4 +109,20 @@ fn alternative_to_while_is_range() {
     for number in (1..4).rev() {
        println!("number: {number}"); // 3 2 1
     }
+}
+
+fn temps_program() {
+    let fahr_temp: f32 = 62.0;
+    let celc_temp: f32 = convert_to_celsius(fahr_temp);
+
+    println!("{fahr_temp} fahrenheit converted to celsius is {celc_temp}");
+    println!("converted back to fahrenheit is {}", convert_to_fahrenheit(celc_temp));
+}
+
+fn convert_to_celsius(f: f32) -> f32 {
+    ( f - 32.0 ) * 5.0 / 9.0
+}
+
+fn convert_to_fahrenheit(c: f32) -> f32 {
+    ( c * 9.0 / 5.0 ) + 32.0
 }
