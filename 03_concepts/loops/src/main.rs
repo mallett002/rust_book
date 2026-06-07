@@ -159,16 +159,16 @@ fn lyrics_12_days_christmas_program() {
     let song_template = HashMap::from([
         ("first", "A partridge in a pear tree"),
         ("second", "Two turtle doves and"),
-        ("third", "Three french hens"),
-        ("fourth", "Four calling birds"),
-        ("fifth", "Five golden rings"),
-        ("sixth", "Six geese a-laying"),
-        ("seventh", "Seven swans a-swimming"),
-        ("eighth", "Eight maids a-milking"),
-        ("ninth", "Nine ladies dancing"),
-        ("tenth", "Ten lords a-leaping"),
-        ("eleventh", "Eleven pipers piping"),
-        ("twelfth", "Twelve drummers drumming"),
+        ("third", "Three french hens,"),
+        ("fourth", "Four calling birds,"),
+        ("fifth", "Five golden rings,"),
+        ("sixth", "Six geese a-laying,"),
+        ("seventh", "Seven swans a-swimming,"),
+        ("eighth", "Eight maids a-milking,"),
+        ("ninth", "Nine ladies dancing,"),
+        ("tenth", "Ten lords a-leaping,"),
+        ("eleventh", "Eleven pipers piping,"),
+        ("twelfth", "Twelve drummers drumming,"),
     ]);
 
     let days: [&str; 12] = [
