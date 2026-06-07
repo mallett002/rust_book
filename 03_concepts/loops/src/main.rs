@@ -10,9 +10,9 @@ fn main() {
     looping_through_collections();
     alternative_to_while_is_range();
     temps_program();
+    gen_nth_fib_program();
 
     // TODO:
-    // Generate the nth Fibonacci number.
     // Print the lyrics to the Christmas carol “The Twelve Days of Christmas,” taking advantage of the repetition in the song.
 }
 
@@ -23,7 +23,7 @@ fn returning_values_from_loops() {
 
     // save result of loop to value
     let result = loop {
-        counter += 1;        
+        counter += 1;
 
         if counter == 10 {
             break counter * 2;
@@ -54,7 +54,7 @@ fn loop_labels() {
             }
             if count == 2 {
                 println!("breaking outer!");
-                break 'counting_up // break the outer loop 
+                break 'counting_up; // break the outer loop 
             }
             remaining -= 1;
         }
@@ -102,12 +102,12 @@ fn alternative_to_while_is_range() {
     println!("\nalternative_to_while_is_range");
 
     for number in 1..4 {
-       println!("number: {number}"); // 1 2 3
+        println!("number: {number}"); // 1 2 3
     }
 
     // can reverse it with "rev"
     for number in (1..4).rev() {
-       println!("number: {number}"); // 3 2 1
+        println!("number: {number}"); // 3 2 1
     }
 }
 
@@ -116,13 +116,41 @@ fn temps_program() {
     let celc_temp: f32 = convert_to_celsius(fahr_temp);
 
     println!("{fahr_temp} fahrenheit converted to celsius is {celc_temp}");
-    println!("converted back to fahrenheit is {}", convert_to_fahrenheit(celc_temp));
+    println!(
+        "converted back to fahrenheit is {}",
+        convert_to_fahrenheit(celc_temp)
+    );
 }
 
 fn convert_to_celsius(f: f32) -> f32 {
-    ( f - 32.0 ) * 5.0 / 9.0
+    (f - 32.0) * 5.0 / 9.0
 }
 
 fn convert_to_fahrenheit(c: f32) -> f32 {
-    ( c * 9.0 / 5.0 ) + 32.0
+    (c * 9.0 / 5.0) + 32.0
+}
+
+fn gen_nth_fib_program() {
+    let nth_fib_number = 4;
+
+    // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144
+    println!("fib({nth_fib_number}): {}", fib(nth_fib_number));
+}
+
+fn fib(seq: u8) -> u8 {
+    if seq == 1 {
+        return 0;
+    }
+
+    // resume on 2nd iteration:
+    let mut prev = 0;
+    let mut curr = 1;
+
+    for _ in 2..seq {
+        let next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+
+    curr
 }
