@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 fn main() {
     // loop that doesn't end:
     // loop {
@@ -11,9 +13,7 @@ fn main() {
     alternative_to_while_is_range();
     temps_program();
     gen_nth_fib_program();
-
-    // TODO:
-    // Print the lyrics to the Christmas carol “The Twelve Days of Christmas,” taking advantage of the repetition in the song.
+    lyrics_12_days_christmas_program();
 }
 
 fn returning_values_from_loops() {
@@ -153,4 +153,55 @@ fn fib(seq: u8) -> u8 {
     }
 
     curr
+}
+
+fn lyrics_12_days_christmas_program() {
+    let song_template = HashMap::from([
+        ("first", "A partridge in a pear tree"),
+        ("second", "Two turtle doves and"),
+        ("third", "Three french hens"),
+        ("fourth", "Four calling birds"),
+        ("fifth", "Five golden rings"),
+        ("sixth", "Six geese a-laying"),
+        ("seventh", "Seven swans a-swimming"),
+        ("eighth", "Eight maids a-milking"),
+        ("ninth", "Nine ladies dancing"),
+        ("tenth", "Ten lords a-leaping"),
+        ("eleventh", "Eleven pipers piping"),
+        ("twelfth", "Twelve drummers drumming"),
+    ]);
+
+    let days: [&str; 12] = [
+        "first", 
+        "second",
+        "third",     
+        "fourth",    
+        "fifth",     
+        "sixth", 
+        "seventh",
+        "eighth",
+        "ninth", 
+        "tenth", 
+        "eleventh",
+        "twelfth",
+    ];
+
+    let mut gifts: Vec<&str> = Vec::new();
+
+    for day in days {
+        let gift = match song_template.get(&day) { // or just song_template[day];
+            Some(&res) => res,
+            None => "",
+        };
+
+        gifts.push(gift);
+
+        println!("On the {day} day of Christmas my true love gave to me:");
+
+        for g in gifts.iter().rev() {
+           println!("{g}");
+        }
+
+        println!();
+    }
 }
