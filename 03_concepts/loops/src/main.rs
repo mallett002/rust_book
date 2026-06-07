@@ -112,7 +112,7 @@ fn alternative_to_while_is_range() {
 }
 
 fn temps_program() {
-    let fahr_temp: f32 = 62.0;
+    let fahr_temp: f32 = 100.0;
     let celc_temp: f32 = convert_to_celsius(fahr_temp);
 
     println!("{fahr_temp} fahrenheit converted to celsius is {celc_temp}");
@@ -123,11 +123,11 @@ fn temps_program() {
 }
 
 fn convert_to_celsius(f: f32) -> f32 {
-    (f - 32.0) * 5.0 / 9.0
+    ((f - 32.0) * 5.0 / 9.0).round()
 }
 
 fn convert_to_fahrenheit(c: f32) -> f32 {
-    (c * 9.0 / 5.0) + 32.0
+    ((c * 9.0 / 5.0) + 32.0).round()
 }
 
 fn gen_nth_fib_program() {
@@ -172,24 +172,15 @@ fn lyrics_12_days_christmas_program() {
     ]);
 
     let days: [&str; 12] = [
-        "first", 
-        "second",
-        "third",     
-        "fourth",    
-        "fifth",     
-        "sixth", 
-        "seventh",
-        "eighth",
-        "ninth", 
-        "tenth", 
-        "eleventh",
-        "twelfth",
+        "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
+        "tenth", "eleventh", "twelfth",
     ];
 
     let mut gifts: Vec<&str> = Vec::new();
 
     for day in days {
-        let gift = match song_template.get(&day) { // or just song_template[day];
+        let gift = match song_template.get(&day) {
+            // or just song_template[day];
             Some(&res) => res,
             None => "",
         };
@@ -199,7 +190,7 @@ fn lyrics_12_days_christmas_program() {
         println!("On the {day} day of Christmas my true love gave to me:");
 
         for g in gifts.iter().rev() {
-           println!("{g}");
+            println!("{g}");
         }
 
         println!();
