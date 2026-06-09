@@ -23,5 +23,46 @@
 2. A value can only have 1 owner at a time
 3. When owner goes out of scope, the value will be dropped
 
-### Left off: https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#the-string-type
-- test
+### ownership is a heap concept
+
+### String type stores memory on the heap (unknown at compile time)
+
+```rs
+// Move: s1 moved into s2, and s1 will be dropped
+let s1 = String::from("hello");
+let s2 = s1; // "Move": makes s1 no longer valid (can't use it)
+println!("{s1}"); // Error
+```
+
+```rs
+// Variables no longer needed are dropped:
+let mut s = String::from("hello"); // this will be dropped (de-allocated)
+s = String::from("ahoy!"); // re-assigned "s"
+println!("{s} world"):
+```
+
+```rs
+// Can make deep copy if really need to:
+let s1 = String::from("hello");
+let s2 = s1.clone(); // deep copy (creates a new heap allocation for s2)
+println!("s1: {s1}; s2: {s2}"); // works fine
+// This is expensive, and a sign something not normal is occurring
+```
+
+```rs
+// Copy trait - Doesn't allow moves
+let x = 5; // doesn't move x to y (keeps them both)
+let y = x;
+println!("x: {x}; y: {y}"); // works fine
+
+// many scalar types implement Copy trait: See `https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#stack-only-data-copy`
+
+// Cannot add Copy trait if type or any of its contents implement the Drop trait
+```
+
+### Left off here: https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#ownership-and-functions
+
+
+
+
+
