@@ -16,8 +16,7 @@ fn main() {
 
     // Ownership with functions ------------------------
     let s = String::from("howdy"); // s comes into scope
-    takes_ownership(s); // func takes ownership, s no longer valid here, so dropped
-    // s moved into takes_ownership, can't use
+    takes_ownership(s); // s moves into func takes_ownership, s no longer valid here
     // println!("can still use {s}"); // would cause error
 
     let x = 5;
