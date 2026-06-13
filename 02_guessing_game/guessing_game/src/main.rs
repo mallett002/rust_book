@@ -5,12 +5,12 @@ use rand::Rng;
 
 fn main() {
     // I'm adding this
-    const MAX_GUESSES: u32 = 10;
+    const MAX_GUESSES: u8 = 10;
 
     println!("Guess the number!");
 
     let secret_number = rand::thread_rng().gen_range(1..=100);
-    let mut total_guesses: u32 = 1;
+    let mut total_guesses: u8 = 1;
 
     loop {
         println!("Guess # {total_guesses} of {MAX_GUESSES}.");

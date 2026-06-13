@@ -43,6 +43,9 @@ fn main() {
     let (my_str_again, len) = calc_length(my_str);
 
     println!("The length of {my_str_again} is {len}.");
+
+    references();
+    try_modify_borrowed_reference();
 }
 
 fn takes_ownership(some_string: String) { // some_string comes into scope
@@ -69,4 +72,39 @@ fn calc_length(s: String) -> (String, usize) {
     let length = s.len();
 
     (s, length)
+}
+
+fn references() {
+    let s1 = String::from("hello");
+
+    let len = calculate_length(&s1); // pass in reference
+
+    println!("Length of {s1} is {len}");
+
+    // s -> (ptr s1) -> val -> (heap val)
+}
+
+// takes in reference
+// reference is address to value owned by other var
+fn calculate_length(s: &String) -> usize { // s reference to a string (borrowing)
+    s.len()
+} // s out of scope
+// doesn't own it, so s is not dropped
+
+fn try_modify_borrowed_reference() {
+    // let s = String::from("hello");
+    // change(&s);
+
+    let mut s = String::from("hello");
+    change_mutable_ref(&mut s);
+}
+
+// this won't work - can't modify a borrowed value
+// similar to immutible vars
+fn change(some_string: &String) {
+    // some_string.push_str(", world");
+}
+
+fn change_mutable_ref(some_string: &mut String) {
+    some_string.push_str(", world");
 }
