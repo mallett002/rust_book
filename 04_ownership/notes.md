@@ -60,8 +60,6 @@ println!("x: {x}; y: {y}"); // works fine
 // Cannot add Copy trait if type or any of its contents implement the Drop trait
 ```
 
-### Left off here: https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#ownership-and-functions
-
 
 
 
