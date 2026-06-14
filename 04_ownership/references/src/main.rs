@@ -3,6 +3,7 @@ fn main() {
     try_modify_borrowed_reference(); // you can't, unless mutable
     only_one_mut_ref();
     ref_scope_duration();
+    dangling_refs();
     // left off: https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#dangling-references
 }
 
@@ -88,3 +89,17 @@ fn ref_scope_duration() {
     let r3 = &mut s; // no problem - can create mutable reference now
     println!("{r3}");
 }
+
+fn dangling_refs() {
+   let reference_to_nothing = dangle(); 
+}
+
+// tries to return a reference to a string
+// by the time the caller uses this reference, what it's referencing gets dropped
+fn dangle() -> &String {
+    let s = String::from("hello"); 
+
+    &s
+} // s out of scope and is dropped
+
+
