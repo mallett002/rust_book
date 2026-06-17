@@ -45,6 +45,7 @@ fn main() {
 
     string_literals_as_slices();
     other_slices();
+    playing();
 }
 
 fn first_word(s: &String) -> usize {
@@ -114,4 +115,35 @@ fn other_slices() {
     let slice = &a[1..3];
 
     assert_eq!(slice, &[2, 3]);
+}
+
+fn playing() {
+    // make slice
+    let my_num_slice = &[1, 2, 3, 4, 5];
+
+    // get items 1 - 4
+    // ":?" -> use debug formatting since slices don't implement std::fmt::Display
+    println!("my_num_slice: {:?}", &my_num_slice[1..4]);
+
+    // copy slice
+    let copied_slice = &my_num_slice[..];
+    println!("copied_slice: {:?}", copied_slice);
+
+
+    // implement nth_word func
+    let my_phrase = "helloworldhowareyou";
+
+    let nth = 2;
+    let word = get_nth_word(my_phrase, 2);
+
+    println!("the {nth} word is: `{word}`");
+}
+
+fn get_nth_word(phrase: &str, n: usize) -> &str {
+    let nth = n - 1; // split().nth is index based, but the interface to get_nth_word is not
+
+    match phrase.split(" ").nth(nth) {
+        Some(word) => word,
+        None => phrase,
+    }
 }
