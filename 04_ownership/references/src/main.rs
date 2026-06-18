@@ -4,7 +4,6 @@ fn main() {
     only_one_mut_ref();
     ref_scope_duration();
     dangling_refs();
-    // left off: https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#dangling-references
 }
 
 fn references() {
