@@ -36,7 +36,8 @@ fn main() {
         dwight_email,
     );
 
-    // left off: https://doc.rust-lang.org/book/ch05-01-defining-structs.html#creating-instances-with-struct-update-syntax
+    struct_update_syntax();
+    // left off: https://doc.rust-lang.org/book/ch05-01-defining-structs.html#creating-different-types-with-tuple-structs
 }
 
 fn build_user(username: String, email: String) -> User {
@@ -46,4 +47,33 @@ fn build_user(username: String, email: String) -> User {
         email,
         sign_in_count: 1,
     }
+}
+
+fn struct_update_syntax() {
+    // https://doc.rust-lang.org/book/ch05-01-defining-structs.html#creating-instances-with-struct-update-syntax
+
+    let jim = User {
+        active: true,
+        username: String::from("halperj123"),
+        email: String::from("halperj123@dundermifflen.com"),
+        sign_in_count: 100,
+    };
+
+    // use fields from jim to make other_jim:
+    let other_jim = User {
+        active: jim.active,
+        username: jim.username,
+        email: String::from("other_halperj123@dundermifflen.com"),
+        sign_in_count: jim.sign_in_count,
+    };
+
+    // use fields other_jim to make other_jim_2 (using update syntax spread "..")
+    let other_jim_2 = User {
+        email: String::from("other_halper_2_j123@dundermifflen.com"),
+        ..other_jim // ".." must come last
+    };
+
+    // println!("{}", other_jim.username); // can't do (data moved to other_jim_2)
+    println!("{}", other_jim_2.username);
+
 }

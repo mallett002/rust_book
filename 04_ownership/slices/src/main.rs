@@ -81,6 +81,7 @@ fn string_literals_as_slices() {
     // string literals are slices
     let my_str = "howdy"; // my_str is a &str
     // &str is a slice (ref to portion or all of string data)
+    // data baked into executable. slice just points to it witha length of 5.
 
 
     let my_string = String::from("hello world");
@@ -102,10 +103,13 @@ fn string_literals_as_slices() {
     let word = first_word_slices(my_string_literal);
 
 
+    // &str is a reference to a slice of a string — it's a fat pointer (ptr + length), no ownership.
+
     // String is like a notebook page you own — you can write on it,
     // erase it, make it longer.
     // &str is like someone handing you a sticky note with words already written on it 
     // — you can read them, but you can't change or add to them.
+
 }
 
 fn other_slices() {
