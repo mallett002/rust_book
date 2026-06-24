@@ -38,8 +38,8 @@ fn main() {
 
     struct_update_syntax();
     diff_types_with_tuple_structs();
-
-    // left off here: https://doc.rust-lang.org/book/ch05-01-defining-structs.html#defining-unit-like-structs
+    unit_like_structs();
+    structs_with_lifetimes();
 }
 
 fn build_user(username: String, email: String) -> User {
@@ -94,4 +94,33 @@ fn diff_types_with_tuple_structs() {
     let Point(x, y, z) = origin;
 
     println!("{x}, {y}, {z}");
+}
+
+struct AlwaysEqual;
+
+fn unit_like_structs() {
+    // https://doc.rust-lang.org/book/ch05-01-defining-structs.html#defining-unit-like-structs
+    let subject = AlwaysEqual;
+}
+
+// needs lifetimes
+// ensures data that the reference is pointing to exists as long as struct does
+#[derive(Debug)] // add debug trait
+struct UserNeedingLifetimes<'a> {
+    active: bool,
+    username: &'a str, // adding lifetime here
+    email: &'a str, // adding lifetime here
+    sign_in_count: u64,
+}
+
+fn structs_with_lifetimes() {
+    // https://doc.rust-lang.org/book/ch05-01-defining-structs.html#ownership-of-struct-data
+    let dwight = UserNeedingLifetimes {
+        active: true,
+        username: "Dwight",
+        email: "Schrute",
+        sign_in_count: 100,
+    };
+
+    println!("{:?}", dwight); // uses debug trait so can print it
 }
