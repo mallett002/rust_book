@@ -82,10 +82,32 @@ fn method_way() {
     println!("The area is {}", area);
 
     println!("my_rect has width? {}", my_rect.width());
-    
+
+    // small test program for can_hold method
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    let rect2 = Rectangle {
+        width: 10,
+        height: 40,
+    };
+    let rect3 = Rectangle {
+        width: 60,
+        height: 45,
+    };
+
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
+
+    // using associated function
+    let sq = Rectangle::square(5);
+
+    println!("A square: {:?}", sq);
 }
 
-// add method "area" on Rectangle
+// impl block to add methods and associated functions
+// a type can have multiple impl blocks
 impl Rectangle {
     fn area(&self) -> u32 {
         // &self is short for "self: &Self"
@@ -95,5 +117,17 @@ impl Rectangle {
     // method that has same name as a field (width)
     fn width(&self) -> bool {
         self.width > 0
+    }
+
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+
+    // associated function (doesn't need instance of type Rectangle to work
+    fn square(size: u32) -> Self {
+        Self {
+            width: size,
+            height: size,
+        }
     }
 }
