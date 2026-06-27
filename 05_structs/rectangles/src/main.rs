@@ -3,7 +3,6 @@ fn main() {
     // tuple_struct_way();
     // struct_way();
     method_way();
-    // left off https://doc.rust-lang.org/book/ch05-03-method-syntax.html#methods-with-more-parameters
 }
 
 // -------------------------------------------------------------
