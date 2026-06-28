@@ -16,6 +16,16 @@ fn main() {
     let write_message = Message::Write(String::from("hello"));
 
     write_message.call();
+
+    // using the move enum (struct-like type)
+    let my_move = Message::Move {
+        x: 50,
+        y: -50,
+    };
+
+    my_move.call();
+
+    // left off here: https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html#the-option-enum
 }
 
 // can use any V4 or V6
