@@ -25,7 +25,7 @@ fn main() {
 
     my_move.call();
 
-    // left off here: https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html#the-option-enum
+    option_enum();
 }
 
 // can use any V4 or V6
@@ -62,4 +62,22 @@ impl Message {
     fn call(&self) {
         // do something
     }
+}
+
+fn option_enum() {
+    // examples
+    let some_number = Some(5);
+    let some_char = Some('e');
+    let absent_number: Option<i32> = None;
+
+    let x: i8 = 5;
+    let y: Option<i8> = Some(5);
+
+    // handle optional y
+    let sum = match y {
+        Some(y) => y + x,
+        None => x,
+    };
+
+    println!("sum: {sum}");
 }
