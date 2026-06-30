@@ -18,10 +18,7 @@ fn main() {
     write_message.call();
 
     // using the move enum (struct-like type)
-    let my_move = Message::Move {
-        x: 50,
-        y: -50,
-    };
+    let my_move = Message::Move { x: 50, y: -50 };
 
     my_move.call();
 
@@ -83,7 +80,6 @@ fn option_enum() {
 
     println!("sum: {sum}");
 }
-
 
 enum Coin {
     Penny,
