@@ -26,6 +26,8 @@ fn main() {
     my_move.call();
 
     option_enum();
+    match_with_enum();
+    // left off here: https://doc.rust-lang.org/book/ch06-02-match.html#patterns-that-bind-to-values
 }
 
 // can use any V4 or V6
@@ -80,4 +82,32 @@ fn option_enum() {
     };
 
     println!("sum: {sum}");
+}
+
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn match_with_enum() {
+    let my_penny: Coin = Coin::Penny;
+
+    println!("my pennie's value: {}", value_in_cents(&my_penny));
+
+    let other_val = value_in_cents(&my_penny);
+}
+
+fn value_in_cents(coin: &Coin) -> u8 {
+    match coin {
+        Coin::Penny => {
+            println!("Luck penny!");
+            1
+        }
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
 }
