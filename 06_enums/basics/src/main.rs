@@ -117,12 +117,12 @@ fn value_in_cents(coin: &Coin) -> u8 {
         Coin::Quarter(state) => {
             println!("State quarter from {:?}!", state);
             25
-        },
+        }
     }
 }
 
 fn option_matching() {
-    let five = Some(5); 
+    let five = Some(5);
     let six = plus_one(five);
     let seven = plus_one(six);
 
