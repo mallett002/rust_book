@@ -24,7 +24,7 @@ fn main() {
 
     option_enum();
     match_with_enum();
-    // left off here: https://doc.rust-lang.org/book/ch06-02-match.html#patterns-that-bind-to-values
+    option_matching();
 }
 
 // can use any V4 or V6
@@ -117,5 +117,23 @@ fn value_in_cents(coin: &Coin) -> u8 {
             println!("State quarter from {:?}!", state);
             25
         },
+    }
+}
+
+fn option_matching() {
+    let five = Some(5); 
+    let six = plus_one(five);
+    let seven = plus_one(six);
+
+    println!("six is {}", six.unwrap());
+    println!("seven is {}", seven.unwrap());
+
+    let none = plus_one(None);
+}
+
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None,
+        Some(i) => Some(i + 1),
     }
 }
