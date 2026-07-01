@@ -25,6 +25,7 @@ fn main() {
     option_enum();
     match_with_enum();
     option_matching();
+    // left off here: https://doc.rust-lang.org/book/ch06-02-match.html#matches-are-exhaustive
 }
 
 // can use any V4 or V6
