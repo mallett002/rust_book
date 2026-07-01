@@ -81,19 +81,28 @@ fn option_enum() {
     println!("sum: {sum}");
 }
 
+#[derive(Debug)] // so we can inspect the state
+enum UsState {
+    Alabama,
+    Alaska,
+    Arizona,
+    Iowa,
+    Texas,
+}
+
 enum Coin {
     Penny,
     Nickel,
     Dime,
-    Quarter,
+    Quarter(UsState),
 }
 
 fn match_with_enum() {
     let my_penny: Coin = Coin::Penny;
-
     println!("my pennie's value: {}", value_in_cents(&my_penny));
 
-    let other_val = value_in_cents(&my_penny);
+    let alaska_quarter: Coin = Coin::Quarter(UsState::Alaska);
+    println!("alaska quarter value: {}", value_in_cents(&alaska_quarter));
 }
 
 fn value_in_cents(coin: &Coin) -> u8 {
@@ -104,6 +113,9 @@ fn value_in_cents(coin: &Coin) -> u8 {
         }
         Coin::Nickel => 5,
         Coin::Dime => 10,
-        Coin::Quarter => 25,
+        Coin::Quarter(state) => {
+            println!("State quarter from {:?}!", state);
+            25
+        },
     }
 }
