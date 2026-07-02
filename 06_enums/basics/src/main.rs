@@ -25,7 +25,9 @@ fn main() {
     option_enum();
     match_with_enum();
     option_matching();
-    // left off here: https://doc.rust-lang.org/book/ch06-02-match.html#matches-are-exhaustive
+    catch_all_patterns();
+    if_let_basics();
+    if_let_else();
 }
 
 // can use any V4 or V6
@@ -137,4 +139,79 @@ fn plus_one(x: Option<i32>) -> Option<i32> {
         None => None,
         Some(i) => Some(i + 1),
     }
+}
+
+fn catch_all_patterns() {
+    let dice_roll = 9;
+
+    // catch all
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        other => move_player(other), // catches all other cases
+    }
+
+    // can use "_" if don't need catch-all var
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        _ => re_roll(), // catches all other cases
+    }
+
+    // can use unit "()" if you want nothing to happen on all other cases
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        _ => (), // catches all other cases, does nothing
+    }
+
+}
+
+fn add_fancy_hat() {}
+fn remove_fancy_hat() {}
+fn move_player(moves: u8) {}
+fn re_roll() {}
+
+fn if_let_basics() {
+    let config_max = Some(3u8);
+
+    // only execute code if max is "Some" with match (little too verbose)
+    match config_max {
+        Some(max) => println!("Max is {max}"),
+        _ => (),
+    }
+
+    // can instead use if let:
+    if let Some(max) = config_max {
+        println!("Max is {max}");
+    }
+
+    // Use if let when you only want to do something for one case (don't need exhaustive cases that
+    // match offers)
+}
+
+fn if_let_else() {
+    // Imagine you want to call out the quarter's state if it's a quarter, else increment count of
+    // all other coins.
+    // You can do this with a match as seen below.
+    // Or you can also do this with an "if let else" below.
+
+    let coin: Coin = Coin::Quarter(UsState::Alaska);
+    let other_coin: Coin = Coin::Quarter(UsState::Alaska);
+
+    let mut count = 0;
+
+    // using match
+    match coin {
+        Coin::Quarter(state) => println!("State quarter from {:?}!", state),
+        _ => count += 1,
+    }
+
+    // using if let else
+    if let Coin::Quarter(state) = other_coin {
+        println!("State quarter from {:?}!", state);
+    } else {
+        count += 1;
+    }
+
 }
