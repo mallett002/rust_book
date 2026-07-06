@@ -28,6 +28,7 @@ fn main() {
     catch_all_patterns();
     if_let_basics();
     if_let_else();
+    let_else();
 }
 
 // can use any V4 or V6
@@ -88,11 +89,9 @@ fn option_enum() {
 enum UsState {
     Alabama,
     Alaska,
-    Arizona,
-    Iowa,
-    Texas,
 }
 
+#[derive(Debug)]
 enum Coin {
     Penny,
     Nickel,
@@ -214,4 +213,67 @@ fn if_let_else() {
         count += 1;
     }
 
+}
+
+fn let_else() {
+    println!("let_else");
+
+    let alaska_quarter = Coin::Quarter(UsState::Alaska);
+
+    let description = describe_state_quarter_three(alaska_quarter);
+
+    if let Some(val) = description {
+        println!("description: {val}");
+    }
+}
+
+impl UsState {
+    fn existed_in(&self, year: u16) -> bool {
+        match self {
+            UsState::Alabama => year >= 1819,
+            UsState::Alaska => year >= 1959,
+        }
+    }
+}
+
+fn describe_state_quarter_one(coin: Coin) -> Option<String> {
+    if let Coin::Quarter(state) = coin {
+
+        if state.existed_in(1900) {
+            Some(format!("{state:?} is pretty old for America!"))
+        } else {
+            Some(format!("{state:?} is relatively new."))
+        }
+
+    } else {
+        None
+    }
+}
+
+fn describe_state_quarter_two(coin: Coin) -> Option<String> {
+    let state = if let Coin::Quarter(state) = coin {
+        state
+    } else {
+        return None;
+    };
+
+    if state.existed_in(1900) {
+        Some(format!("{state:?} is pretty old for America!"))
+    } else {
+        Some(format!("{state:?} is relatively new."))
+    }
+}
+
+// with "let...else" syntax
+// TODO: try and re-write this
+fn describe_state_quarter_three(coin: Coin) -> Option<String> {
+    let Coin::Quarter(state) = coin else {
+        return None;
+    };
+
+    if state.existed_in(1900) {
+        Some(format!("{state:?} is pretty old for America!"))
+    } else {
+        Some(format!("{state:?} is relatively new."))
+    }
 }
