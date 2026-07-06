@@ -47,18 +47,23 @@ fn main() {
 fn add_contact() {
     println!("add_contact");
 }
+
 fn list_contacts() {
     println!("list_contacts");
 }
+
 fn find_contact() {
     println!("find_contact");
 }
+
 fn update_contact() {
     println!("update_contact");
 }
+
 fn delete_contact() {
     println!("delete_contact");
 }
+
 fn quit() {
     println!("quit");
 }
