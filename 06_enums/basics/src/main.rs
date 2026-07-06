@@ -1,3 +1,5 @@
+use std::fmt;
+
 enum IpAddrKind {
     V4,
     V6,
@@ -265,7 +267,6 @@ fn describe_state_quarter_two(coin: Coin) -> Option<String> {
 }
 
 // with "let...else" syntax
-// TODO: try and re-write this
 fn describe_state_quarter_three(coin: Coin) -> Option<String> {
     let Coin::Quarter(state) = coin else {
         return None;
