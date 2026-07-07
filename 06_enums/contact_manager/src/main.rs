@@ -13,7 +13,8 @@ struct Contact {
 }
 
 fn prompt_menu() {
-    println!("=== Contact Manager ===");
+    println!("\n=== Contact Manager ===");
+    println!("Select option (ex: 1 to add contact)");
     println!("1. Add contact\n2. List contacts\n3. Find contact\n4. Update contact\n5. Delete contact\n6. Quit\n");
 }
 
@@ -156,7 +157,7 @@ fn add_contact() {
                 break;
             }
         }
-    };
+    }
 
     println!("\ncontacts entered: {:?}\n", contact_methods);
 }
