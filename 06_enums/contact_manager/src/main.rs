@@ -6,6 +6,7 @@ enum ContactMethod {
     Email(String),
 }
 
+#[derive(Debug)]
 struct Contact {
     first: String,
     last: String,
@@ -162,7 +163,13 @@ fn add_contact() {
         }
     }
 
-    println!("\ncontacts entered: {:?}\n", contact_methods);
+    let contact = Contact {
+        first,
+        last,
+        contact_methods,
+    };
+
+    println!("\ncontact entered: {:#?}\n", contact);
 }
 
 fn list_contacts() {
