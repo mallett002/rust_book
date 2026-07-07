@@ -60,9 +60,12 @@ fn add_contact() {
     let first = loop {
         let mut input = String::new();
 
-        io::stdin()
-            .read_line(&mut input)
-            .expect("expected a first name");
+        // using match here instead of .expect()
+        match io::stdin().read_line(&mut input) {
+            Ok(_) => {},
+            Err(e) => panic!("expected a first name: {e}"),
+        }
+
         let input = input.trim().to_string();
 
         if !input.is_empty() {
