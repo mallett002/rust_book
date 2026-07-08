@@ -1,5 +1,5 @@
-use std::io;
 use std::fs;
+use std::io;
 
 #[derive(Debug)]
 enum ContactMethod {
@@ -17,7 +17,9 @@ struct Contact {
 fn prompt_menu() {
     println!("\n=== Contact Manager ===");
     println!("Select option (ex: 1 to add contact)");
-    println!("1. Add contact\n2. List contacts\n3. Find contact\n4. Update contact\n5. Delete contact\n6. Quit\n");
+    println!(
+        "1. Add contact\n2. List contacts\n3. Find contact\n4. Update contact\n5. Delete contact\n6. Quit\n"
+    );
 }
 
 fn main() {
@@ -64,7 +66,7 @@ fn add_contact() {
 
         // using match here instead of .expect()
         match io::stdin().read_line(&mut input) {
-            Ok(_) => {},
+            Ok(_) => {}
             Err(e) => panic!("expected a first name: {e}"),
         }
 
@@ -199,18 +201,23 @@ fn write_contact(contacts: &[Contact]) {
     let mut csv = String::new();
 
     for contact in contacts {
-        let methods: Vec<String> = dbg!(contact
-            .contact_methods
-            .iter()
-            .map(|m| match m {
-                ContactMethod::Phone(p) => format!("Phone:{p}"),
-                ContactMethod::Email(e) => format!("Email:{e}"),
-            })
-            .collect());
+        let methods: Vec<String> = dbg!(
+            contact
+                .contact_methods
+                .iter()
+                .map(|m| match m {
+                    ContactMethod::Phone(p) => format!("Phone:{p}"),
+                    ContactMethod::Email(e) => format!("Email:{e}"),
+                })
+                .collect()
+        );
 
         let methods_str = dbg!(methods.join("|"));
 
-        csv.push_str(&format!("{},{},{}\n", contact.first, contact.last, methods_str));
+        csv.push_str(&format!(
+            "{},{},{}\n",
+            contact.first, contact.last, methods_str
+        ));
     }
 
     fs::write("contacts.csv", csv).expect("failed to write contacts");
