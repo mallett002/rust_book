@@ -201,18 +201,16 @@ fn write_contact(contacts: &[Contact]) {
     let mut csv = String::new();
 
     for contact in contacts {
-        let methods: Vec<String> = dbg!(
-            contact
-                .contact_methods
-                .iter()
-                .map(|m| match m {
-                    ContactMethod::Phone(p) => format!("Phone:{p}"),
-                    ContactMethod::Email(e) => format!("Email:{e}"),
-                })
-                .collect()
-        );
+        let methods: Vec<String> = contact
+            .contact_methods
+            .iter()
+            .map(|m| match m {
+                ContactMethod::Phone(p) => format!("Phone:{p}"),
+                ContactMethod::Email(e) => format!("Email:{e}"),
+            })
+            .collect();
 
-        let methods_str = dbg!(methods.join("|"));
+        let methods_str = methods.join("|");
 
         csv.push_str(&format!(
             "{},{},{}\n",
