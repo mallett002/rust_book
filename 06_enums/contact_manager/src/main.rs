@@ -174,7 +174,7 @@ fn add_contact() {
 
     println!("\ncontact entered: {:#?}\n", contact);
 
-    write_contact(&[contact])
+    write_contact(&contact)
 }
 
 fn list_contacts() {
@@ -197,26 +197,41 @@ fn quit() {
     println!("quit");
 }
 
-fn write_contact(contacts: &[Contact]) {
+fn write_contact(contact: &Contact) {
+    add_header_if_needed();
+
     let mut csv = String::new();
 
-    for contact in contacts {
-        let methods: Vec<String> = contact
-            .contact_methods
-            .iter()
-            .map(|m| match m {
-                ContactMethod::Phone(p) => format!("Phone:{p}"),
-                ContactMethod::Email(e) => format!("Email:{e}"),
-            })
-            .collect();
+    let methods: Vec<String> = contact
+        .contact_methods
+        .iter()
+        .map(|m| match m {
+            ContactMethod::Phone(p) => format!("Phone:{p}"),
+            ContactMethod::Email(e) => format!("Email:{e}"),
+        })
+        .collect();
 
-        let methods_str = methods.join("|");
+    let methods_str = methods.join("|");
 
-        csv.push_str(&format!(
-            "{},{},{}\n",
-            contact.first, contact.last, methods_str
-        ));
-    }
+    csv.push_str(&format!(
+        "{},{},{}\n",
+        contact.first, contact.last, methods_str
+    ));
 
     fs::write("contacts.csv", csv).expect("failed to write contacts");
+}
+
+fn add_header_if_needed() {
+    let maybe_exists = fs::exists("contacts.csv");
+
+    if let Result::Ok(false) = maybe_exists {
+        let mut csv_header = String::new();
+        
+        csv_header.push_str(&format!(
+            "{},{},{}\n",
+            "first_name", "last_name", "contact_methods"
+        ));
+
+        fs::write("contacts.csv", csv_header).expect("failed to write csv header");
+    }
 }
