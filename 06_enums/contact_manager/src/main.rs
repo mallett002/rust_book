@@ -23,6 +23,19 @@ fn prompt_menu() {
 }
 
 fn main() {
+    create_empty_csv_if_needed();
+
+    // TODO: on startup, read the csv file of contacts
+    // create contacts in memory and populate the vec with them
+    // everytime you add/update/delete a contact, use the vec, then write all the contacts back
+    // into the csv
+    // the vec is sort of like a staging buffer
+    // maybe should do something like: https://stackoverflow.com/questions/74891123/creating-a-2d-vector-from-csv-data
+    let mut contacts: Vec<Contact> = Vec::new();
+
+    // read csv and populate the vec with it
+    populate_contacts_from_disk(&mut contacts);
+
     loop {
         prompt_menu();
 
@@ -198,8 +211,6 @@ fn quit() {
 }
 
 fn write_contact(contact: &Contact) {
-    add_header_if_needed();
-
     let mut csv = String::new();
 
     let methods: Vec<String> = contact
@@ -221,7 +232,7 @@ fn write_contact(contact: &Contact) {
     fs::write("contacts.csv", csv).expect("failed to write contacts");
 }
 
-fn add_header_if_needed() {
+fn create_empty_csv_if_needed() {
     let maybe_exists = fs::exists("contacts.csv");
 
     if let Result::Ok(false) = maybe_exists {
@@ -234,4 +245,10 @@ fn add_header_if_needed() {
 
         fs::write("contacts.csv", csv_header).expect("failed to write csv header");
     }
+}
+
+fn populate_contacts_from_disk(contacts: &mut Vec<Contact>) {
+    let data = fs::read("contacts.csv");
+
+    dbg!(data);
 }
