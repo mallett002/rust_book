@@ -1,5 +1,7 @@
+use std::error::Error;
 use std::fs;
 use std::io;
+use csv::Reader;
 
 #[derive(Debug)]
 enum ContactMethod {
@@ -22,19 +24,46 @@ fn prompt_menu() {
     );
 }
 
+fn read_contacts() -> Result<Vec<Contact>, Box<dyn Error>> {
+    let mut rdr = Reader::from_path("contacts.csv")?;
+    let mut contacts = Vec::new();
+
+    for result in rdr.records() {
+        let record = result?;
+
+        let first = record.get(0).unwrap_or("").to_string();
+        let last = record.get(1).unwrap_or("").to_string();
+
+        // build up contact_methods
+        let mut contact_methods = Vec::new();
+
+        let methods_str = record.get(2).unwrap_or(""); // what does this do?
+
+        if !methods_str.is_empty() {
+            for m in methods_str.split("|") {
+                let mut kv = m.splitn(2, ':');
+                let tag = kv.next().unwrap_or("");
+                let val = kv.next().unwrap_or("").to_string();
+
+                match tag {
+                    "Phone" => contact_methods.push(ContactMethod::Phone(val)),
+                    "Email" => contact_methods.push(ContactMethod::Email(val)),
+                    _ => {}
+                }
+            }
+        }
+        
+        contacts.push(Contact {first, last, contact_methods});
+    }
+
+    Ok(contacts)
+}
+
 fn main() {
-    create_empty_csv_if_needed();
+    // this is good now
+    let contacts = read_contacts().unwrap_or_default();
 
-    // TODO: on startup, read the csv file of contacts
-    // create contacts in memory and populate the vec with them
-    // everytime you add/update/delete a contact, use the vec, then write all the contacts back
-    // into the csv
-    // the vec is sort of like a staging buffer
-    // maybe should do something like: https://stackoverflow.com/questions/74891123/creating-a-2d-vector-from-csv-data
-    let mut contacts: Vec<Contact> = Vec::new();
-
-    // read csv and populate the vec with it
-    populate_contacts_from_disk(&mut contacts);
+    println!("contacts: {:?}", contacts);
 
     loop {
         prompt_menu();
@@ -187,7 +216,7 @@ fn add_contact() {
 
     println!("\ncontact entered: {:#?}\n", contact);
 
-    write_contact(&contact)
+    write_contact_deprecated(&contact)
 }
 
 fn list_contacts() {
@@ -210,7 +239,7 @@ fn quit() {
     println!("quit");
 }
 
-fn write_contact(contact: &Contact) {
+fn write_contact_deprecated(contact: &Contact) {
     let mut csv = String::new();
 
     let methods: Vec<String> = contact
@@ -237,7 +266,7 @@ fn create_empty_csv_if_needed() {
 
     if let Result::Ok(false) = maybe_exists {
         let mut csv_header = String::new();
-        
+
         csv_header.push_str(&format!(
             "{},{},{}\n",
             "first_name", "last_name", "contact_methods"
@@ -245,10 +274,4 @@ fn create_empty_csv_if_needed() {
 
         fs::write("contacts.csv", csv_header).expect("failed to write csv header");
     }
-}
-
-fn populate_contacts_from_disk(contacts: &mut Vec<Contact>) {
-    let data = fs::read("contacts.csv");
-
-    dbg!(data);
 }
