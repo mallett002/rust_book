@@ -1,7 +1,8 @@
+use csv::Reader;
+use csv::ReaderBuilder;
 use std::error::Error;
 use std::fs;
 use std::io;
-use csv::Reader;
 
 #[derive(Debug)]
 enum ContactMethod {
@@ -24,8 +25,48 @@ fn prompt_menu() {
     );
 }
 
+fn main() {
+    let contacts = read_contacts().unwrap_or_default();
+
+    println!("contacts: {:?}", contacts);
+
+    loop {
+        prompt_menu();
+
+        let mut choice = String::new();
+
+        io::stdin()
+            .read_line(&mut choice)
+            .expect("expected an option");
+
+        let choice: u8 = match choice.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("choose valid option: 1-6");
+                continue;
+            }
+        };
+
+        match choice {
+            1 => add_contact(&contacts),
+            2 => list_contacts(),
+            3 => find_contact(),
+            4 => update_contact(),
+            5 => delete_contact(),
+            6 => quit(),
+            _ => println!("choose valid option: 1-6"),
+        }
+
+        if choice == 6 {
+            println!("exiting...");
+            break;
+        }
+    }
+}
+
 fn read_contacts() -> Result<Vec<Contact>, Box<dyn Error>> {
     let mut rdr = Reader::from_path("contacts.csv")?;
+
     let mut contacts = Vec::new();
 
     for result in rdr.records() {
@@ -52,54 +93,19 @@ fn read_contacts() -> Result<Vec<Contact>, Box<dyn Error>> {
                 }
             }
         }
-        
-        contacts.push(Contact {first, last, contact_methods});
+
+        contacts.push(Contact {
+            first,
+            last,
+            contact_methods,
+        });
     }
 
     Ok(contacts)
 }
 
-fn main() {
-    // this is good now
-    let contacts = read_contacts().unwrap_or_default();
 
-    println!("contacts: {:?}", contacts);
-
-    loop {
-        prompt_menu();
-
-        let mut choice = String::new();
-
-        io::stdin()
-            .read_line(&mut choice)
-            .expect("expected an option");
-
-        let choice: u8 = match choice.trim().parse() {
-            Ok(num) => num,
-            Err(_) => {
-                println!("choose valid option: 1-6");
-                continue;
-            }
-        };
-
-        match choice {
-            1 => add_contact(),
-            2 => list_contacts(),
-            3 => find_contact(),
-            4 => update_contact(),
-            5 => delete_contact(),
-            6 => quit(),
-            _ => println!("choose valid option: 1-6"),
-        }
-
-        if choice == 6 {
-            println!("exiting...");
-            break;
-        }
-    }
-}
-
-fn add_contact() {
+fn add_contact(current_contacts: &Vec<Contact>) {
     // ----------- first name -------------------------
     println!("Enter first name:");
 
@@ -145,7 +151,9 @@ fn add_contact() {
     let mut contact_methods: Vec<ContactMethod> = Vec::new();
 
     loop {
-        println!("Enter 1 for phone, 2 for email, or enter 'done' to finish contact methods:");
+        println!(
+            "Select option:\n '1': phone\n '2': email\n 'done': finish contact methods\n 'cancel': cancel"
+        );
 
         let mut input = String::new();
 
@@ -154,6 +162,10 @@ fn add_contact() {
             .expect("expected an option: 1, 2 or done");
 
         let input = input.trim().to_string();
+
+        if input == "cancel" {
+            break;
+        }
 
         if input == "1" {
             println!("Enter phone, or enter 'cancel' to cancel:");
@@ -174,6 +186,8 @@ fn add_contact() {
             if phone != "cancel" {
                 let phone = ContactMethod::Phone(phone);
                 contact_methods.push(phone);
+            } else {
+                break;
             }
         }
 
@@ -196,6 +210,8 @@ fn add_contact() {
             if email != "cancel" {
                 let email = ContactMethod::Email(email);
                 contact_methods.push(email);
+            } else {
+                break;
             }
         }
 
@@ -216,7 +232,7 @@ fn add_contact() {
 
     println!("\ncontact entered: {:#?}\n", contact);
 
-    write_contact_deprecated(&contact)
+    add_contact_to_all_contacts(&contact, current_contacts)
 }
 
 fn list_contacts() {
@@ -239,10 +255,32 @@ fn quit() {
     println!("quit");
 }
 
-fn write_contact_deprecated(contact: &Contact) {
+fn add_contact_to_all_contacts(newContact: &Contact, current_contacts: &Vec<Contact>) {
     let mut csv = String::new();
 
-    let methods: Vec<String> = contact
+    // TODO: Write the header again
+
+    // 1. build up current contacts to write to csv
+    for contact in current_contacts {
+        let methods: Vec<String> = contact
+            .contact_methods
+            .iter()
+            .map(|m| match m {
+                ContactMethod::Phone(p) => format!("Phone:{p}"),
+                ContactMethod::Email(e) => format!("Email:{e}"),
+            })
+            .collect();
+
+        let methods_str = methods.join("|");
+
+        csv.push_str(&format!(
+            "{},{},{}\n",
+            contact.first, contact.last, methods_str
+        ));
+    }
+
+    // 2. add new contact in
+    let methods: Vec<String> = newContact
         .contact_methods
         .iter()
         .map(|m| match m {
@@ -255,8 +293,10 @@ fn write_contact_deprecated(contact: &Contact) {
 
     csv.push_str(&format!(
         "{},{},{}\n",
-        contact.first, contact.last, methods_str
+        newContact.first, newContact.last, methods_str
     ));
+
+    println!("csv: {}", csv);
 
     fs::write("contacts.csv", csv).expect("failed to write contacts");
 }
