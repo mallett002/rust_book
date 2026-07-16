@@ -1,5 +1,4 @@
 use csv::Reader;
-use csv::ReaderBuilder;
 use std::error::Error;
 use std::fs;
 use std::io;
@@ -28,8 +27,6 @@ fn prompt_menu() {
 fn main() {
     let contacts = read_contacts().unwrap_or_default();
 
-    println!("contacts: {:?}", contacts);
-
     loop {
         prompt_menu();
 
@@ -53,12 +50,12 @@ fn main() {
             3 => find_contact(),
             4 => update_contact(),
             5 => delete_contact(),
-            6 => quit(),
+            6 => (),
             _ => println!("choose valid option: 1-6"),
         }
 
         if choice == 6 {
-            println!("exiting...");
+            println!("Thank you. Please come again!");
             break;
         }
     }
@@ -251,16 +248,16 @@ fn delete_contact() {
     println!("delete_contact");
 }
 
-fn quit() {
-    println!("quit");
-}
-
-fn add_contact_to_all_contacts(newContact: &Contact, current_contacts: &Vec<Contact>) {
+fn add_contact_to_all_contacts(new_contact: &Contact, current_contacts: &Vec<Contact>) {
     let mut csv = String::new();
 
-    // TODO: Write the header again
+    // 1. add header
+    csv.push_str(&format!(
+        "{},{},{}\n",
+        "first_name", "last_name", "contact_methods"
+    ));
 
-    // 1. build up current contacts to write to csv
+    // 2. build up current contacts to write to csv
     for contact in current_contacts {
         let methods: Vec<String> = contact
             .contact_methods
@@ -279,8 +276,8 @@ fn add_contact_to_all_contacts(newContact: &Contact, current_contacts: &Vec<Cont
         ));
     }
 
-    // 2. add new contact in
-    let methods: Vec<String> = newContact
+    // 3. add new contact in
+    let methods: Vec<String> = new_contact
         .contact_methods
         .iter()
         .map(|m| match m {
@@ -293,7 +290,7 @@ fn add_contact_to_all_contacts(newContact: &Contact, current_contacts: &Vec<Cont
 
     csv.push_str(&format!(
         "{},{},{}\n",
-        newContact.first, newContact.last, methods_str
+        new_contact.first, new_contact.last, methods_str
     ));
 
     println!("csv: {}", csv);
@@ -301,17 +298,3 @@ fn add_contact_to_all_contacts(newContact: &Contact, current_contacts: &Vec<Cont
     fs::write("contacts.csv", csv).expect("failed to write contacts");
 }
 
-fn create_empty_csv_if_needed() {
-    let maybe_exists = fs::exists("contacts.csv");
-
-    if let Result::Ok(false) = maybe_exists {
-        let mut csv_header = String::new();
-
-        csv_header.push_str(&format!(
-            "{},{},{}\n",
-            "first_name", "last_name", "contact_methods"
-        ));
-
-        fs::write("contacts.csv", csv_header).expect("failed to write csv header");
-    }
-}
