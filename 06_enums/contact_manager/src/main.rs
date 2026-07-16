@@ -38,7 +38,7 @@ fn main() {
 
         match choice {
             1 => add_contact(&contacts),
-            2 => list_contacts(),
+            2 => list_contacts(&contacts),
             3 => find_contact(),
             4 => update_contact(),
             5 => delete_contact(),
@@ -233,8 +233,31 @@ fn add_contact(current_contacts: &Vec<Contact>) {
     add_contact_to_all_contacts(&contact, current_contacts)
 }
 
-fn list_contacts() {
-    println!("list_contacts");
+fn list_contacts(current_contacts: &Vec<Contact>) {
+    // build up a string
+    // loop over each contact and make it pretty for the print
+    // print
+    let mut listed_contacts = String::new();
+
+    for contact in current_contacts {
+        let methods: Vec<String> = contact
+            .contact_methods
+            .iter()
+            .map(|m| match m {
+                ContactMethod::Phone(p) => format!("Phone:{p}"),
+                ContactMethod::Email(e) => format!("Email:{e}"),
+            })
+            .collect();
+
+        let methods_str = methods.join("|");
+
+        listed_contacts.push_str(&format!(
+            "{},{},{}\n",
+            contact.first, contact.last, methods_str
+        ));
+    }
+
+    println!("{}", listed_contacts);
 }
 
 fn find_contact() {
