@@ -75,11 +75,12 @@ fn read_contacts() -> Result<Vec<Contact>, Box<dyn Error>> {
         // build up contact_methods
         let mut contact_methods = Vec::new();
 
-        let methods_str = record.get(2).unwrap_or(""); // what does this do?
+        let methods_str = record.get(2).unwrap_or("");
 
         if !methods_str.is_empty() {
-            for m in methods_str.split("|") {
-                let mut kv = m.splitn(2, ':');
+            for method in methods_str.split("|") {
+                let mut kv = method.splitn(2, ':');
+
                 let tag = kv.next().unwrap_or("");
                 let val = kv.next().unwrap_or("").to_string();
 
