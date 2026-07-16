@@ -16,14 +16,6 @@ struct Contact {
     contact_methods: Vec<ContactMethod>,
 }
 
-fn prompt_menu() {
-    println!("\n=== Contact Manager ===");
-    println!("Select option (ex: 1 to add contact)");
-    println!(
-        "1. Add contact\n2. List contacts\n3. Find contact\n4. Update contact\n5. Delete contact\n6. Quit\n"
-    );
-}
-
 fn main() {
     let contacts = read_contacts().unwrap_or_default();
 
@@ -59,6 +51,14 @@ fn main() {
             break;
         }
     }
+}
+
+fn prompt_menu() {
+    println!("\n=== Contact Manager ===");
+    println!("Select option (ex: 1 to add contact)");
+    println!(
+        "1. Add contact\n2. List contacts\n3. Find contact\n4. Update contact\n5. Delete contact\n6. Quit\n"
+    );
 }
 
 fn read_contacts() -> Result<Vec<Contact>, Box<dyn Error>> {
