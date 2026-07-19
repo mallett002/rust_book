@@ -2,6 +2,7 @@
 
 ## Common commands
 - `cargo new my_project` -> Create a new rust project with cargo (creates dir)
+- `cargo new my_project --lib` -> Create a new rust library with cargo (creates dir)
 - `cargo build` -> Build the project (creates executable in debug dir for development)
     - creates an exectuable to run `./my_project`
 - `cargo build --release` -> Build the project for a release (optimized)
