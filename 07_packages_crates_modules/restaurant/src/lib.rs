@@ -25,30 +25,6 @@ mod front_of_house {
     }
 }
 
-pub fn eat_at_restaurant() {
-    // Absolute path
-    crate::front_of_house::hosting::add_to_wait_list();
-    // Relative path
-    front_of_house::hosting::add_to_wait_list();
-
-    // order breakfast with rye bread
-    let mut meal = back_of_house::Breakfast::summer("Rye");
-
-    // change our mind about what type of bread
-    meal.toast = String::from("Wheat");
-
-    println!("I'd like {} toast please", meal.toast);
-
-    // Following line won't compile. It's a private field
-    // meal.seasonal_fruit = String::from("Blueberries");
-
-    // using public enum:
-    let order1 = back_of_house::Appetizer::Soup;
-    let order2 = back_of_house::Appetizer::Salad;
-}
-
-fn deliver_order() {}
-
 mod back_of_house {
     // calling super functions
     fn fix_incorrect_order() {
@@ -80,3 +56,36 @@ mod back_of_house {
         Salad,
     }
 }
+
+mod customer {
+    pub fn eat_at_restaurant() {
+        // Absolute path
+        crate::front_of_house::hosting::add_to_wait_list();
+        // Relative path
+        front_of_house::hosting::add_to_wait_list();
+        // after bringin hosting into scope (use)
+        front_of_house::hosting::add_to_wait_list();
+
+        // order breakfast with rye bread
+        let mut meal = back_of_house::Breakfast::summer("Rye");
+
+        // change our mind about what type of bread
+        meal.toast = String::from("Wheat");
+
+        println!("I'd like {} toast please", meal.toast);
+
+        // Following line won't compile. It's a private field
+        // meal.seasonal_fruit = String::from("Blueberries");
+
+        // using public enum:
+        let order1 = back_of_house::Appetizer::Soup;
+        let order2 = back_of_house::Appetizer::Salad;
+    }
+}
+
+// Bring front_of_house, hosting into scope so can use shorter path
+use crate::front_of_house::hosting;
+
+
+fn deliver_order() {}
+
