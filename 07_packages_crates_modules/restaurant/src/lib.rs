@@ -1,4 +1,3 @@
-
 // root crate and module tree:
 
 // crate
@@ -11,10 +10,9 @@
 //          ├── serve_order
 //          └── take_payment
 
-// TODO: left off here: `https://doc.rust-lang.org/book/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#starting-relative-paths-with-super`
+// TODO: left off here: `https://doc.rust-lang.org/book/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#making-structs-and-enums-public`
 
 mod front_of_house {
-
     pub mod hosting {
         pub fn add_to_wait_list() {}
         fn seat_at_table() {}
@@ -30,7 +28,55 @@ mod front_of_house {
 pub fn eat_at_restaurant() {
     // Absolute path
     crate::front_of_house::hosting::add_to_wait_list();
-
     // Relative path
     front_of_house::hosting::add_to_wait_list();
+
+    // order breakfast with rye bread
+    let mut meal = back_of_house::Breakfast::summer("Rye");
+
+    // change our mind about what type of bread
+    meal.toast = String::from("Wheat");
+
+    println!("I'd like {} toast please", meal.toast);
+
+    // Following line won't compile. It's a private field
+    // meal.seasonal_fruit = String::from("Blueberries");
+
+    // using public enum:
+    let order1 = back_of_house::Appetizer::Soup;
+    let order2 = back_of_house::Appetizer::Salad;
+}
+
+fn deliver_order() {}
+
+mod back_of_house {
+    // calling super functions
+    fn fix_incorrect_order() {
+        cook_order();
+        super::deliver_order(); // call parent (global) fn
+    }
+
+    fn cook_order() {}
+
+    // structs and enums public
+    // public struct with only 1 member public. fruit isn't allowed to be altered.
+    pub struct Breakfast {
+        pub toast: String,
+        seasonal_fruit: String,
+    }
+
+    impl Breakfast {
+        pub fn summer(toast: &str) -> Breakfast {
+            Breakfast {
+                toast: String::from(toast),
+                seasonal_fruit: String::from("peaches"),
+            }
+        }
+    }
+
+    // public enum, all fields are public
+    pub enum Appetizer {
+        Soup,
+        Salad,
+    }
 }
