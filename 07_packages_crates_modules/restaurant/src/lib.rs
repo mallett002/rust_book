@@ -10,7 +10,7 @@
 //          ├── serve_order
 //          └── take_payment
 
-// TODO: left off here: `https://doc.rust-lang.org/book/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#making-structs-and-enums-public`
+// TODO: left off here: `https://doc.rust-lang.org/book/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html`
 
 mod front_of_house {
     pub mod hosting {
