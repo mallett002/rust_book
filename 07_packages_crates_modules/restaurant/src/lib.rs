@@ -10,8 +10,6 @@
 //          ├── serve_order
 //          └── take_payment
 
-// TODO: left off here: `https://doc.rust-lang.org/book/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html`
-
 mod front_of_house {
     pub mod hosting {
         pub fn add_to_wait_list() {}
@@ -58,13 +56,15 @@ mod back_of_house {
 }
 
 mod customer {
+    use crate::front_of_house::hosting;
+    use crate::back_of_house;
+    
     pub fn eat_at_restaurant() {
         // Absolute path
         crate::front_of_house::hosting::add_to_wait_list();
+
         // Relative path
-        front_of_house::hosting::add_to_wait_list();
-        // after bringin hosting into scope (use)
-        front_of_house::hosting::add_to_wait_list();
+        hosting::add_to_wait_list(); // just bring hosting into scope, not add_to_wait_list
 
         // order breakfast with rye bread
         let mut meal = back_of_house::Breakfast::summer("Rye");
@@ -82,10 +82,6 @@ mod customer {
         let order2 = back_of_house::Appetizer::Salad;
     }
 }
-
-// Bring front_of_house, hosting into scope so can use shorter path
-use crate::front_of_house::hosting;
-
 
 fn deliver_order() {}
 
