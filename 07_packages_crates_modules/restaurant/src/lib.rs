@@ -12,7 +12,7 @@
 
 mod front_of_house {
     pub mod hosting {
-        pub fn add_to_wait_list() {}
+        pub fn add_to_waitlist() {}
         fn seat_at_table() {}
     }
 
@@ -61,10 +61,10 @@ mod customer {
     
     pub fn eat_at_restaurant() {
         // Absolute path
-        crate::front_of_house::hosting::add_to_wait_list();
+        crate::front_of_house::hosting::add_to_waitlist();
 
         // Relative path
-        hosting::add_to_wait_list(); // just bring hosting into scope, not add_to_wait_list
+        hosting::add_to_waitlist(); // just bring hosting into scope, not add_to_waitlist
 
         // order breakfast with rye bread
         let mut meal = back_of_house::Breakfast::summer("Rye");
