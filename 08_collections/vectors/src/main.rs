@@ -43,6 +43,4 @@ fn main() {
 
     println!("The first element is {first}"); // immutable borrow again used here. no-op after
     // pushing. might not be at the same location
-
-    // TODO: left off: https://doc.rust-lang.org/book/ch08-01-vectors.html#iterating-over-the-values-in-a-vector
 }
