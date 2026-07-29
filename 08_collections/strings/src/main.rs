@@ -38,7 +38,7 @@ fn main() {
     let s3 = s1 + &s2; // s1 moved here so can no longer be used
     // the "+" uses: fn add(self, s: &str) -> String
     // self means takes ownership (no ref). Rust coerces &String into &str for us
-    // println!("{s1}"); // can't use here
+    // println!("{s1}"); // so, since moved, can't use here
     println!("{s3}");
 
     // concatenating multiple strings
@@ -75,6 +75,7 @@ fn main() {
         println!("{c}");
     }
 
+    // use bytes method to get the underlying bytes
     for b in "Зд".bytes() {
         println!("{b}");
     }
