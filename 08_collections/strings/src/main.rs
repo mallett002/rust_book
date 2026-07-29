@@ -56,21 +56,26 @@ fn main() {
     // let answer = &hello[0]; // can't do this in rust - would return 208 instead of "H"
 
     // Bytes, Scalar values, and Grapheme Clusters --------------------------------------------
-    // “नमस्ते” (hindi word)
-    // stored like this:        [224, 164, 168, 224, 164, 174, 224, 164, 184, 224, 165, 141, 224, 164, 164, 224, 165, 135]
-    // unicode scalar (char):   ['न', 'म', 'स', '्', 'त', 'े']
-    // grapheme cluster:        ["न", "म", "स्", "ते"]
+    // “नमस्ते” (hindi word):
+    //     “नमस्ते” stored like this:        [224, 164, 168, 224, 164, 174, 224, 164, 184, 224, 165, 141, 224, 164, 164, 224, 165, 135]
+    //     “नमस्ते” unicode scalar (char):   ['न', 'म', 'स', '्', 'त', 'े']
+    //     “नमस्ते” grapheme cluster:        ["न", "म", "स्", "ते"]
 
     // Slicing strings ----------------------------------------------------------------
+    println!("\nslicing strings:");
     let hello = "Здравствуйте";
     let s = &hello[0..4];
     println!("{s}");
     // let s = &hello[0..1]; // will panic (each character takes 2 bytes long) dangerous
 
     // Iterating over strings ---------------------------------------------------------
+    println!("\nIterating over strings:");
     // use chars method
     for c in "Зд".chars() {
         println!("{c}");
     }
-    // TODO: left off https://doc.rust-lang.org/book/ch08-02-strings.html#iterating-over-strings
+
+    for b in "Зд".bytes() {
+        println!("{b}");
+    }
 }
