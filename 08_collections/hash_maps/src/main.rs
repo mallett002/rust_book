@@ -19,4 +19,6 @@ fn main() {
     for (key, value) in &scores {
         println!("{key}: {value}");
     }
+
+    // TODO: left off https://doc.rust-lang.org/book/ch08-03-hash-maps.html#managing-ownership-in-hash-maps
 }
