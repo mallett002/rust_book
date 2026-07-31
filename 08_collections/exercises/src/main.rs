@@ -1,23 +1,25 @@
 use std::collections::HashMap;
 
 fn main() {
-    let even_num_list = vec![10, 2, 12, 5, 2, 1, 11];
-    let odd_num_list = vec![3, 5, 4, 1, 2, 5];
+    // let even_num_list = vec![10, 2, 12, 5, 2, 1, 11];
+    // let odd_num_list = vec![3, 5, 4, 1, 2, 5];
+    //
+    // // find median
+    // let median_even = find_median(&even_num_list);
+    // let median_odd = find_median(&odd_num_list);
+    //
+    // println!("median_even: {}", median_even);
+    // println!("median_odd: {}", median_odd);
+    //
+    // // find mode
+    // // let mode = find_mode(&nums);
+    // let mode_even = find_mode(&even_num_list); // should be 2
+    // let mode_odd = find_mode(&odd_num_list); // should be 3
+    //
+    // println!("mode_even: {}", mode_even);
+    // println!("mode_odd: {}", mode_odd);
 
-    // find median
-    let median_even = find_median(&even_num_list);
-    let median_odd = find_median(&odd_num_list);
-
-    println!("median_even: {}", median_even);
-    println!("median_odd: {}", median_odd);
-
-    // find mode
-    // let mode = find_mode(&nums);
-    let mode_even = find_mode(&even_num_list); // should be 2
-    let mode_odd = find_mode(&odd_num_list); // should be 3
-
-    println!("mode_even: {}", mode_even);
-    println!("mode_odd: {}", mode_odd);
+    // Convert strings to pig-latin
 }
 
 fn find_median(nums: &[i32]) -> i32 {
