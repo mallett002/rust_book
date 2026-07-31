@@ -17,14 +17,15 @@ fn find_median(nums: &[i32]) -> i32 {
 // fn find_median(nums: &mut Vec<i32>) -> i32 {
     let mut sorted = nums.to_vec();
     sorted.sort();
+    println!("sorted: {sorted:?}");
 
-    let length = nums.len();
+    let length = sorted.len();
     let mid = length / 2;
 
     if length % 2 == 0 { // if is even
-        (nums[mid - 1] + nums[mid]) / 2 // average the 2 middle values (returns)
+        (sorted[mid - 1] + sorted[mid]) / 2 // average the 2 middle values (returns)
     } else {
-        nums[mid] // not even, just return the middle one in the list
+        sorted[mid] // not even, just return the middle one in the list
     }
 }
 
