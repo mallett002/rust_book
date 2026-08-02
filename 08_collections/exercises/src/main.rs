@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Index};
 
 fn main() {
     // let even_num_list = vec![10, 2, 12, 5, 2, 1, 11];
@@ -20,6 +20,10 @@ fn main() {
     // println!("mode_odd: {}", mode_odd);
 
     // Convert strings to pig-latin
+    println!("\n Convert strings to pig-latin");
+    let my_str = String::from("This is going to be fun!");
+    let my_str_in_pl = to_pig_latin(&my_str);
+    println!("{my_str_in_pl}");
 }
 
 fn find_median(nums: &[i32]) -> i32 {
@@ -72,3 +76,41 @@ fn find_mode_with_option(nums: &[i32]) -> Option<i32> {
         .max_by_key(|&(_, count)| count) // get the key that has the highest count
         .map(|(num, _)| num) // receives the pair from max_by_key and returns the key
 }
+
+fn to_pig_latin(input_str: &str) -> String {
+    let vowels = ['a', 'e', 'i', 'o', 'u'];
+
+    let length = input_str.chars().size_hint();
+
+    let mut result = String::new();
+
+    for (index, word) in input_str.to_string().split_whitespace().enumerate() {
+        let trimmed = word.trim_end_matches(|c: char| c.is_ascii_punctuation());
+        let suffix = &word[trimmed.len()..];
+
+        let first_char: char = trimmed.chars().next().unwrap();
+        let first_is_vowel: bool = vowels.contains(&first_char);
+
+        let base_word = &trimmed[1..];
+
+        let converted_word = if first_is_vowel {
+            if suffix != "" {
+                format!("{base_word}-hay{suffix}")
+            } else {
+                format!("{base_word}-hay ")
+            }
+
+        } else {
+            if suffix != "" {
+                format!("{base_word}-{first_char}ay{suffix}")
+            } else {
+                format!("{base_word}-{first_char}ay ")
+            }
+        };
+
+        result.push_str(&converted_word);
+    }
+
+    result
+}
+
