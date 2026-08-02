@@ -86,29 +86,22 @@ fn to_pig_latin(input_str: &str) -> String {
 
     for (index, word) in input_str.to_string().split_whitespace().enumerate() {
         let trimmed = word.trim_end_matches(|c: char| c.is_ascii_punctuation());
-        let suffix = &word[trimmed.len()..];
+
+        let end_punctuation = &word[trimmed.len()..];
+        let suffix = if end_punctuation.is_empty() { " " } else { end_punctuation };
 
         let first_char: char = trimmed.chars().next().unwrap();
         let first_is_vowel: bool = vowels.contains(&first_char);
 
         let base_word = &trimmed[1..];
 
-        let converted_word = if first_is_vowel {
-            if suffix != "" {
-                format!("{base_word}-hay{suffix}")
-            } else {
-                format!("{base_word}-hay ")
-            }
-
-        } else {
-            if suffix != "" {
-                format!("{base_word}-{first_char}ay{suffix}")
-            } else {
-                format!("{base_word}-{first_char}ay ")
-            }
+        let stem = match first_is_vowel {
+            true => format!("{base_word}-hay"),
+            false => format!("{base_word}-{first_char}ay")
         };
 
-        result.push_str(&converted_word);
+        result.push_str(&stem);
+        result.push_str(suffix);
     }
 
     result
