@@ -24,6 +24,10 @@ fn main() {
     let my_str = String::from("This is going to be fun!");
     let my_str_in_pl = to_pig_latin(&my_str);
     println!("{my_str_in_pl}");
+
+    // Other pig latin from stack overflow:
+    let my_str_in_pl = pigify(&my_str);
+    println!("{my_str_in_pl}");
 }
 
 fn find_median(nums: &[i32]) -> i32 {
@@ -77,6 +81,15 @@ fn find_mode_with_option(nums: &[i32]) -> Option<i32> {
         .map(|(num, _)| num) // receives the pair from max_by_key and returns the key
 }
 
+fn uppercase_first_letter(s: &str) -> String {
+    let mut chars = s.chars();
+
+    match chars.next() {
+        Some(char) => char.to_uppercase().collect::<String>() + chars.as_str(),
+        None => String::new(),
+    }
+}
+
 fn to_pig_latin(input_str: &str) -> String {
     let vowels = ['a', 'e', 'i', 'o', 'u'];
 
@@ -88,7 +101,11 @@ fn to_pig_latin(input_str: &str) -> String {
         let trimmed = word.trim_end_matches(|c: char| c.is_ascii_punctuation());
 
         let end_punctuation = &word[trimmed.len()..];
-        let suffix = if end_punctuation.is_empty() { " " } else { end_punctuation };
+        let suffix = if end_punctuation.is_empty() {
+            " "
+        } else {
+            end_punctuation
+        };
 
         let first_char: char = trimmed.chars().next().unwrap();
         let first_is_vowel: bool = vowels.contains(&first_char);
@@ -97,13 +114,45 @@ fn to_pig_latin(input_str: &str) -> String {
 
         let stem = match first_is_vowel {
             true => format!("{base_word}-hay"),
-            false => format!("{base_word}-{first_char}ay")
+            false => format!("{base_word}-{first_char}ay"),
         };
 
         result.push_str(&stem);
         result.push_str(suffix);
     }
 
-    result
+    uppercase_first_letter(&result)
 }
 
+// -- Pig Latin found on stack overflow
+fn pigify_one(word: &str) -> String {
+    let mut chars = word.chars();
+
+    let first_char = match chars.next() {
+        Some(c) => c,
+        None => return String::new(),
+    };
+
+    match first_char {
+        'a' | 'e' | 'i' | 'o' | 'u' => format!("{}-hay", word), // olah -> olah-hay
+        _ => format!("{}-{}ay", chars.as_str(), first_char), // clock -> lock-cay
+    }
+}
+
+fn folder(mut accum: String, curr: String) -> String {
+    // add a space after the word
+    if !accum.is_empty() {
+        accum.push(' ');
+    }
+
+    // tack on the curr word
+    accum.push_str(&curr);
+
+    accum
+}
+
+fn pigify(text: &str) -> String {
+    text.split_whitespace()
+        .map(pigify_one)
+        .fold(String::new(), folder)
+}
