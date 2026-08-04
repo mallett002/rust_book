@@ -141,6 +141,6 @@ fn pigify_one(word: &str) -> String {
 fn pigify(text: &str) -> String {
     text.split_whitespace()
         .map(pigify_one)
-        .collect::<Vec<_>>() // turn iterator into collection ("_" here lets rust infer the type
+        .collect::<Vec<_>>() // turn iterator into collection ("_" here lets rust infer the type)
         .join(" ") // join them with a space
 }
