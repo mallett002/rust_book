@@ -124,7 +124,6 @@ fn to_pig_latin(input_str: &str) -> String {
     uppercase_first_letter(&result)
 }
 
-// -- Pig Latin found on stack overflow
 fn pigify_one(word: &str) -> String {
     let mut chars = word.chars();
 
@@ -139,20 +138,9 @@ fn pigify_one(word: &str) -> String {
     }
 }
 
-fn folder(mut accum: String, curr: String) -> String {
-    // add a space after the word
-    if !accum.is_empty() {
-        accum.push(' ');
-    }
-
-    // tack on the curr word
-    accum.push_str(&curr);
-
-    accum
-}
-
 fn pigify(text: &str) -> String {
     text.split_whitespace()
         .map(pigify_one)
-        .fold(String::new(), folder)
+        .collect::<Vec<_>>() // turn iterator into collection ("_" here lets rust infer the type
+        .join(" ") // join them with a space
 }
