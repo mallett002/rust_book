@@ -124,23 +124,40 @@ fn to_pig_latin(input_str: &str) -> String {
     uppercase_first_letter(&result)
 }
 
-fn pigify_one(word: &str) -> String {
-    let mut chars = word.chars();
+fn pigify_word(( i, word ): (usize, &str)) -> String {
+    // 1. strip off end punctuation
+    let word_no_punc = word.trim_end_matches(|c: char| c.is_ascii_punctuation());
+    let suffix = &word[word_no_punc.len()..];
 
+    println!("{word_no_punc}");
+    println!("{suffix}");
+
+    // turn word into chars
+    let mut chars = word_no_punc.chars();
+
+    // get first char for pigification
     let first_char = match chars.next() {
         Some(c) => c,
-        None => return String::new(),
+        None => return String::new(), // Early return of pigify_word. No first char found
     };
 
-    match first_char {
-        'a' | 'e' | 'i' | 'o' | 'u' => format!("{}-hay", word), // olah -> olah-hay
-        _ => format!("{}-{}ay", chars.as_str(), first_char), // clock -> lock-cay
+    // do the pigification - ignore case so "Apple" isn't treated as consonant
+    let pigified = match first_char.to_ascii_lowercase() {
+        'a' | 'e' | 'i' | 'o' | 'u' => format!("{}-hay{}", word_no_punc, suffix), // olah -> olah-hay
+        _ => format!("{}-{}ay{}", chars.as_str(), first_char.to_lowercase(), suffix), // clock -> lock-cay
+    };
+
+    // uppercase first char
+    match i == 0 {
+        true => uppercase_first_letter(&pigified),
+        false => pigified,
     }
 }
 
 fn pigify(text: &str) -> String {
     text.split_whitespace()
-        .map(pigify_one)
+        .enumerate()
+        .map(pigify_word)
         .collect::<Vec<_>>() // turn iterator into collection ("_" here lets rust infer the type)
         .join(" ") // join them with a space
 }
