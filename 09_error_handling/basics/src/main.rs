@@ -1,16 +1,18 @@
 use std::fs::File;
-use std::io::{Error, Read, ErrorKind};
+use std::io::{Error, ErrorKind, Read};
 
 fn main() {
     // panicking();
     // recoverable_errors();
     // recoverable_errors_without_match();
     shortcuts_for_panic_on_error();
+
+    // TODO: left off https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#propagating-errors
 }
 
 fn panicking() {
     // one way to panic
-    panic!("crash and burn"); 
+    panic!("crash and burn");
 
     // another way to panic
     let v = vec![1, 2, 3];
@@ -31,11 +33,11 @@ fn recoverable_errors() {
             ErrorKind::NotFound => match File::create("hello.txt") {
                 Ok(created_file) => created_file,
                 Err(e) => panic!("Problem creating the file: {e:?}"),
-            }
-            _ => {
-                panic!("Problem opening the file: {error:?}") 
             },
-        }
+            _ => {
+                panic!("Problem opening the file: {error:?}")
+            }
+        },
     };
 
     // read the file contents
@@ -64,5 +66,12 @@ fn recoverable_errors_without_match() {
 }
 
 fn shortcuts_for_panic_on_error() {
+    // unwrap returns result of Ok(), or panics for us
+    let greeting_file = File::open("hello.txt").unwrap();
 
+    // expect() is similar to unwrap(), but you can chose your error message
+    let greeting_file =
+        File::open("hello.txt").expect("hello.txt should be included in this project");
+
+    // expect() is more common than unwrap()
 }
