@@ -1,13 +1,14 @@
 use std::fs::File;
 use std::io::{Error, ErrorKind, Read};
+// adding just io here for demonstration of read_username_from_file fn.
+use std::io;
 
 fn main() {
     // panicking();
     // recoverable_errors();
     // recoverable_errors_without_match();
-    shortcuts_for_panic_on_error();
-
-    // TODO: left off https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#propagating-errors
+    // shortcuts_for_panic_on_error();
+    propogating_errors();
 }
 
 fn panicking() {
@@ -74,4 +75,28 @@ fn shortcuts_for_panic_on_error() {
         File::open("hello.txt").expect("hello.txt should be included in this project");
 
     // expect() is more common than unwrap()
+}
+
+// Let calling code handle Result<String, io::Error>
+fn read_username_from_file() -> Result<String, io::Error> {
+    let username_file_result = File::open("hello.txt");
+    
+    let mut username_file = match username_file_result {
+        Ok(f) => f,
+        Err(e) => return Err(e), // Return Result::Err here early
+    };
+
+    let mut username = String::new();
+
+    match username_file.read_to_string(&mut username) {
+       Ok(_) => Ok(username), // read_to_string returns byte count read, we don't care ab that
+       Err(e) => Err(e),
+    }
+
+    // TODO: left off https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#listing-9-6
+    // Find: "If this function succeeds without any problems, the code that calls this function"
+}
+
+fn propogating_errors() {
+    read_username_from_file();
 }
