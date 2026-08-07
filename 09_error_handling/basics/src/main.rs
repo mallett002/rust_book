@@ -1,9 +1,11 @@
 use std::fs::File;
-use std::io::{Error, Read};
+use std::io::{Error, Read, ErrorKind};
 
 fn main() {
     // panicking();
-    recoverable_errors();
+    // recoverable_errors();
+    // recoverable_errors_without_match();
+    shortcuts_for_panic_on_error();
 }
 
 fn panicking() {
@@ -20,10 +22,20 @@ fn recoverable_errors() {
     // try to open a file
     let greeting_file_result = File::open("hello.txt"); // Result<File, Error> (don't inferred)
 
-    // handle file or error
+    // Try to read file
+    // If error, check error type
+    // if error type is not found create it else panic
     let mut greeting_file = match greeting_file_result {
         Ok(file) => file,
-        Err(error) => panic!("Problem opening the file: {error:?}"),
+        Err(error) => match error.kind() {
+            ErrorKind::NotFound => match File::create("hello.txt") {
+                Ok(created_file) => created_file,
+                Err(e) => panic!("Problem creating the file: {e:?}"),
+            }
+            _ => {
+                panic!("Problem opening the file: {error:?}") 
+            },
+        }
     };
 
     // read the file contents
@@ -37,4 +49,20 @@ fn recoverable_errors() {
 
     println!("read {byte_count} bytes");
     println!("buff: {buff}");
+}
+
+fn recoverable_errors_without_match() {
+    let greeting_file = File::open("hello.txt").unwrap_or_else(|error| {
+        if error.kind() == ErrorKind::NotFound {
+            File::create("hello.txt").unwrap_or_else(|error| {
+                panic!("Problem creating the file: {error:?}");
+            })
+        } else {
+            panic!("Problem opening the file: {error:?}");
+        }
+    });
+}
+
+fn shortcuts_for_panic_on_error() {
+
 }
