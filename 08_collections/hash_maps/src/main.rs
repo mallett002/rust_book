@@ -56,6 +56,4 @@ fn main() {
     // or_insert gives mutable ref to current count (so if update it, updates it in the map).
 
     println!("{map:?}");
-
-    // TODO: left off https://doc.rust-lang.org/book/ch08-03-hash-maps.html#hashing-functions
 }
