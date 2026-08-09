@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{Error, ErrorKind, Read};
 // adding just io here for demonstration of read_username_from_file fn.
 use std::io;
@@ -93,10 +93,36 @@ fn read_username_from_file() -> Result<String, io::Error> {
        Err(e) => Err(e),
     }
 
-    // TODO: left off https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#listing-9-6
-    // Find: "If this function succeeds without any problems, the code that calls this function"
+}
+
+// "?" converts error type to one defined in func def return type and returns it:
+fn read_username_from_file_shortcut() -> Result<String, io::Error> {
+    let mut username_file = File::open("hello.txt")?; // same as the match Ok Err above
+
+    let mut username = String::new();
+
+    username_file.read_to_string(&mut username)?; // same as the match Ok Err above
+
+    Ok(username)
+}
+
+fn read_username_from_file_shorter_shortcut() -> Result<String, io::Error> {
+    let mut username = String::new();
+
+    File::open("hello.txt")?.read_to_string(&mut username)?; // same as the match Ok Err above
+
+    Ok(username)
+}
+
+fn read_username_from_file_shortest_shortcut() -> Result<String, io::Error> {
+    fs::read_to_string("hello.txt")
 }
 
 fn propogating_errors() {
     read_username_from_file();
+    read_username_from_file_shortcut();
+    read_username_from_file_shorter_shortcut();
+    read_username_from_file_shortest_shortcut();
+
+    // TODO: left off https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#where-to-use-the--operator
 }
