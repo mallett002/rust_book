@@ -2,13 +2,20 @@ use std::fs::{self, File};
 use std::io::{Error, ErrorKind, Read};
 // adding just io here for demonstration of read_username_from_file fn.
 use std::io;
+use std::error::Error as StdError;
 
-fn main() {
+// Box<dyn Error>> is a Trait Object
+// main can return anything that implements the std::process::Termination trait
+fn main() -> Result<(), Box<dyn StdError>> {
     // panicking();
     // recoverable_errors();
     // recoverable_errors_without_match();
     // shortcuts_for_panic_on_error();
     propogating_errors();
+
+    Ok(()) // return 0 for program
+
+    // TODO: left off https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html#guidelines-for-error-handling
 }
 
 fn panicking() {
@@ -118,11 +125,16 @@ fn read_username_from_file_shortest_shortcut() -> Result<String, io::Error> {
     fs::read_to_string("hello.txt")
 }
 
-fn propogating_errors() {
+fn last_char_of_first_line(text: &str) -> Option<char> {
+    text.lines().next()?.chars().last()
+}
+
+fn propogating_errors() -> Result<String, io::Error> {
     read_username_from_file();
     read_username_from_file_shortcut();
     read_username_from_file_shorter_shortcut();
     read_username_from_file_shortest_shortcut();
+    last_char_of_first_line("Hello world!\nHow are you");
 
-    // TODO: left off https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#where-to-use-the--operator
+    fs::read_to_string("hello.txt")
 }
