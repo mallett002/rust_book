@@ -14,8 +14,6 @@ fn main() -> Result<(), Box<dyn StdError>> {
     propogating_errors();
 
     Ok(()) // return 0 for program
-
-    // TODO: left off https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html#guidelines-for-error-handling
 }
 
 fn panicking() {
