@@ -2,6 +2,8 @@ use std::cmp::Ordering;
 use std::io;
 use rand::Rng;
 
+mod guessing_game;
+pub use crate::guessing_game::Guess;
 
 fn main() {
     // I'm adding this
@@ -25,12 +27,12 @@ fn main() {
 
         // parse the guess into a number
         // ignore non numbers
-        let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num,
+        let guess: Guess = match guess.trim().parse() {
+            Ok(num) => Guess::new(num),
             Err(_) => continue,
         };
 
-        match guess.cmp(&secret_number) {
+        match guess.value().cmp(&secret_number) {
             Ordering::Less => println!("Too small!\n"),
             Ordering::Greater => println!("Too big!\n"),
             Ordering::Equal => {
