@@ -97,7 +97,6 @@ fn read_username_from_file() -> Result<String, io::Error> {
        Ok(_) => Ok(username), // read_to_string returns byte count read, we don't care ab that
        Err(e) => Err(e),
     }
-
 }
 
 // "?" converts error type to one defined in func def return type and returns it:
