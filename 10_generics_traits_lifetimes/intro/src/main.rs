@@ -5,7 +5,7 @@ fn main() {
     // extract_out_to_dedupe();
     // duplicated_int_char();
     de_duped_with_generics();
-    // TODO: left off https://doc.rust-lang.org/book/ch10-01-syntax.html#in-struct-definitions
+    generics_with_structs();
 }
 
 fn duplicated() {
@@ -119,3 +119,29 @@ fn largest_generics<T: PartialOrd>(list: &[T]) -> &T {
 
     largest
 }
+
+struct Point<T, U> {
+    x: T,
+    y: U,
+}
+
+impl<T, U> Point<T, U> {
+    fn x(&self) -> &T {
+        &self.x
+    }
+}
+
+fn generics_with_structs() {
+    let int_point = Point{ x: 5, y: 10 };
+    let float_point = Point{ x: 1.0, y: 4.0 };
+    let mixed_point = Point{ x: 1, y: 4.0 };
+}
+
+// Generics on an enum:
+enum MyResult<T, E> {
+    Ok(T),
+    Err(E),
+}
+
+// TODO: left off https://doc.rust-lang.org/book/ch10-01-syntax.html#in-method-definitions
+
