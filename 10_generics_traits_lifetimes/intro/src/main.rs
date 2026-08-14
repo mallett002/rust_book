@@ -108,7 +108,7 @@ fn de_duped_with_generics() {
 
 // same logic inside function, but now with generic type definition
 // PartialOrd enforces that T can be compared with ">"
-fn largest_generics<T: PartialOrd>(list: &[T]) -> &T { 
+fn largest_generics<T: PartialOrd>(list: &[T]) -> &T {
     let mut largest = &list[0];
 
     for num in list {
@@ -131,10 +131,42 @@ impl<T, U> Point<T, U> {
     }
 }
 
+// Define method that only lives on Point that is generic over f32 - no other type
+impl Point<f32, f32> {
+    fn distance_from_origin(&self) -> f32 {
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+
+struct Coordinate<LONG, LAT> {
+    x: LONG,
+    y: LAT,
+}
+
+// fn mixup has diff generic types than Coordinate
+impl<LONG, LAT> Coordinate<LONG, LAT> {
+    fn mixup<HOR, VERT>(self, other: Coordinate<HOR, VERT>) -> Coordinate<LONG, VERT>{
+        Coordinate {
+            x: self.x,
+            y: other.y,
+        }
+    }
+}
+
 fn generics_with_structs() {
-    let int_point = Point{ x: 5, y: 10 };
-    let float_point = Point{ x: 1.0, y: 4.0 };
-    let mixed_point = Point{ x: 1, y: 4.0 };
+    println!("\ngenerics_with_structs");
+
+    let int_point = Point { x: 5, y: 10 };
+    let float_point = Point { x: 1.0, y: 4.0 };
+    let mixed_point = Point { x: 1, y: 4.0 };
+
+    // Using generics where impl fn has different types than struct
+    let c1 = Coordinate{x: 5, y: 10.4};
+    let c2 = Coordinate{x: "Hello", y: 'c'};
+
+    let c3 = c1.mixup(c2);
+
+    println!("c3.x = {}, c3.y = {}", c3.x, c3.y);
 }
 
 // Generics on an enum:
@@ -142,6 +174,3 @@ enum MyResult<T, E> {
     Ok(T),
     Err(E),
 }
-
-// TODO: left off https://doc.rust-lang.org/book/ch10-01-syntax.html#in-method-definitions
-
