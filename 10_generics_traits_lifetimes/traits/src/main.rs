@@ -13,7 +13,7 @@ fn main() {
         repost: false,
     };
 
-    let summary = post.summaraze();
+    let summary = post.summarize();
 
     println!("post summary: {summary}");
 }
