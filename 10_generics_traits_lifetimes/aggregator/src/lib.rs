@@ -100,6 +100,8 @@ where
     5
 }
 
+// TODO: left off https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits
+
 // Note - can only add a trait to a type if:
 // - The trait or the type are defined locally in your project
 // - Or both are defined locally.
