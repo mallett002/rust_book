@@ -1,3 +1,9 @@
+// Note - can only add a trait to a type if:
+// - The trait or the type are defined locally in your project
+// - Or both are defined locally.
+// If both are defined outside your project. You can't add a trait to a type
+// - "You can't add an externally defined trait to an externally defined type"
+
 use std::fmt::Debug;
 use std::fmt::Display;
 
@@ -69,7 +75,7 @@ fn notify_3(item1: &impl Summary, item2: &impl Summary) {
     println!("Breaking news! {}", item2.summarize());
 }
 
-// Force both parameters to have the same type (have to use Trait Bound syntax)
+// Force both parameters to have the same concrete type (have to use Trait Bound syntax)
 fn notify_4<T: Summary>(item1: &T, item2: &T) {
     println!("Breaking news! {}", item1.summarize());
     println!("Breaking news! {}", item2.summarize());
@@ -100,10 +106,79 @@ where
     5
 }
 
-// TODO: left off https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits
+// Returns something that implements Summary:
+fn returns_summerizable() -> impl Summary {
+    SocialPost {
+        username: String::from("horse_ebooks"),
+        content: String::from("of course, as you probably already know, people"),
+        reply: false,
+        repost: false,
+    }
+}
 
-// Note - can only add a trait to a type if:
-// - The trait or the type are defined locally in your project
-// - Or both are defined locally.
-// If both are defined outside your project. You can't add a trait to a type
-// - "You can't add an externally defined trait to an externally defined type"
+// Won't work: Can't return 2 different concrete types even if both impl Summary
+// fn returns_summerizable_wont_work(switch: bool) -> impl Summary {
+//     if switch {
+//         NewsArticle {
+//             headline: String::from(
+//                 "Penguins win the Stanley Cup Championship!",
+//             ),
+//             location: String::from("Pittsburgh, PA, USA"),
+//             author: String::from("Iceburgh"),
+//             content: String::from(
+//                 "The Pittsburgh Penguins once again are the best \
+//                  hockey team in the NHL.",
+//             ),
+//         }
+//     } else {
+//         SocialPost {
+//             username: String::from("horse_ebooks"),
+//             content: String::from(
+//                 "of course, as you probably already know, people",
+//             ),
+//             reply: false,
+//             repost: false,
+//         }
+//     }
+// }
+
+// Using Trait Bounds to Conditionally Implement Methods
+struct Pair<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Pair<T> {
+    fn new(x: T, y: T) -> Self {
+        Self { x, y }
+    }
+}
+
+// Only implements cmp_display if T implements Display AND PartialOrd
+impl<T: Display + PartialOrd> Pair<T> {
+    fn cmp_display(&self) {
+        if self.x >= self.y {
+            println!("The greatest member is x = {}", self.x);
+        } else {
+            println!("The greatest member is y = {}", self.y);
+        }
+    }
+}
+
+// Blanket implementations
+// Ex: Put ToString on anything that implements Display (already exists in std lib)
+// impl<T: Summary> ToString for T {
+//     // --snip--
+// }
+
+// example for blanket implementation
+pub trait AsSummaryString {
+    fn as_summary_string(&self) -> String;
+}
+
+// Blanket impl: Add AsSummaryString to anything that impls Summary
+impl<T: Summary> AsSummaryString for T {
+    fn as_summary_string(&self) -> String {
+        self.summarize()
+    }
+}

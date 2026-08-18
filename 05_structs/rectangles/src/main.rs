@@ -51,7 +51,7 @@ fn struct_way() {
         rect1,
     );
 
-    // using !dbg macro --------------------------------------------------------------
+    // using dbg! macro --------------------------------------------------------------
     // takes owndership and then gives it back
     // so can use it on the fly like width here
     let scale = 2;
