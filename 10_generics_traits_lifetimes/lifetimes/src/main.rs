@@ -4,6 +4,7 @@ fn main() {
     dangling_refs();
     generic_lifetimes_in_funcs();
     lifetimes_in_structs();
+    // TODO: left off: https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html#lifetime-elision
 }
 
 fn dangling_refs() {
@@ -57,19 +58,21 @@ fn generic_lifetimes_in_funcs() {
         println!("Longest is {result}");
     }
 
-    // // Example where compiler doesn't approve
-    // // Longest lifetime says result needs to live as long as the shortest of 2 params
-    // // Although the actual reference used (string1) would be used, the lifetime of string2 is
-    // // picked (bc it's the shortest)
-    // // Rust is saying the reference might not live long enough (longest doesn't know which will be
-    // // picked, x or y at compile time)
-    // let string1 = String::from("long string is long");
-    // let result;
-    // {
-    //     let string2 = String::from("xyz");
-    //     result = longest(string1.as_str(), string2.as_str());
-    // }
-    // println!("The longest string is {result}");
+    // Example where compiler doesn't approve
+    // Longest lifetime says result needs to live as long as the shortest of 2 params
+    // Although the actual reference used (string1) would be used, the lifetime of string2 is
+    // picked (bc it's the shortest)
+    // Rust is saying the reference might not live long enough (longest doesn't know which will be
+    // picked, x or y at compile time)
+    /*
+    let string1 = String::from("long string is long");
+    let result;
+    {
+        let string2 = String::from("xyz");
+        result = longest(string1.as_str(), string2.as_str());
+    }
+    println!("The longest string is {result}");
+    */
 }
 
 // Only adding lifetime to one param (x) and return type
@@ -79,12 +82,14 @@ fn longest_2<'a>(x: &'a str, y: &str) -> &'a str {
     x
 }
 
-// // lifetime only on the return val, not any params
-// // This would return a dangling ref (compile error)
-// fn longest_3<'a>(x: &str, y: &str) -> &'a str {
-//     let result = String::from("Really long string");
-//     result.as_str()
-// }
+// lifetime only on the return val, not any params
+// This would return a dangling ref (compile error)
+/*
+ fn longest_3<'a>(x: &str, y: &str) -> &'a str {
+    let result = String::from("Really long string");
+    result.as_str()
+}
+*/
 
 // Lifetimes on structs
 // 'a here means data in part will live as long as struct instance does
