@@ -18,6 +18,8 @@ fn main() {
 
     // Static lifetime (exists for entire program)
     let s: &'static str = "I have a static lifetime";
+
+    // TODO: left off: https://doc.rust-lang.org/book/ch11-00-testing.html
 }
 
 fn dangling_refs() {
