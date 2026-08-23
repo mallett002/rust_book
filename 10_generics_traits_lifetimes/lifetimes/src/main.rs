@@ -1,10 +1,23 @@
+use std::fmt::Display;
+
 // Lifetimes ensure references are valid as long as we need them to be
 // Every reference has a lifetime
 fn main() {
     dangling_refs();
     generic_lifetimes_in_funcs();
     lifetimes_in_structs();
-    // TODO: left off: https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html#lifetime-elision
+
+    /*
+     * Elision Rules:
+     *   1. each param (input) lifetime gets its own lifetime
+     *   2. if there's just one input lifetime, the return type gets that same lifetime
+     *   3. For methods, all output lifetimes get the lifetime of the &self param
+     */
+
+    lifetimes_in_methods();
+
+    // Static lifetime (exists for entire program)
+    let s: &'static str = "I have a static lifetime";
 }
 
 fn dangling_refs() {
@@ -105,4 +118,53 @@ fn lifetimes_in_structs() {
     let i = ImportantExcerpt {
         part: first_sentence,
     };
+}
+
+// lifetimes in methods
+impl<'a> ImportantExcerpt<'a> {
+    fn level(&self) -> i32 {
+        3
+    }
+}
+
+// where 3rd elision rule applies
+impl<'a> ImportantExcerpt<'a> {
+    fn announce_and_return_part(&self, announcement: &str) -> &str {
+        println!("Attention please: {announcement}");
+        self.part
+    }
+}
+
+// with applied elision rules (#1 & #3)
+// impl<'a> ImportantExcerpt<'a> {
+//     fn announce_and_return_part<'b, 'c>(&'b self, announcement: &'c str) -> &'b str {
+//         println!("Attention please: {announcement}");
+//         self.part
+//     }
+// }
+
+fn lifetimes_in_methods() {
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split(".").next().unwrap();
+
+    let excerpt = ImportantExcerpt {
+        part: first_sentence,
+    };
+
+    let the_level = excerpt.level();
+    println!("{the_level}");
+
+    let announcement = String::from("I love rust!");
+    let the_part = excerpt.announce_and_return_part(announcement.as_str());
+
+    println!("{the_part}");
+}
+
+// Generic types, traitbounds and lifetimes all together:
+fn longest_with_an_announcent<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
+where
+    T: Display,
+{
+    println!("Announcement: {ann}!");
+    if x.len() > y.len() { x } else { y }
 }

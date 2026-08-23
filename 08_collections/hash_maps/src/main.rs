@@ -14,6 +14,14 @@ fn main() {
         .copied() // to get the Option<i32> instead of Option<&i32>
         .unwrap_or(0); // handle the option (the "Some" value or 0)
 
+    // Get a value from the HashMap with error handling
+    let yellow_score = scores
+        .get(&String::from("Yellow"))
+        .ok_or_else(|| {
+            // could return an error here instead of printing
+            println!("Yellow score not found");
+        });
+
     // Iterating over a HashMap's values ---------------------------------------------------------
     // For loop takes ownership - Need to use ref (&scores) so we can still use it afterwards
     for (key, value) in &scores {

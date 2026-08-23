@@ -22,6 +22,14 @@ fn main() {
     // using the move enum (struct-like type)
     let my_move = Message::Move { x: 50, y: -50 };
 
+    // destructure the enum to get the x value
+    let x = match my_move {
+        Message::Move { x, y: _ } => x,
+        _ => 0,
+    };
+
+    println!("{}", x);
+
     my_move.call();
 
     option_enum();
