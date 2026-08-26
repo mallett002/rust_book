@@ -1,3 +1,16 @@
+/*
+cargo test [cargo flags] -- [test binary flags]
+
+ex: `cargo test --release foo -- --test-threads=1`
+
+breakdown:
+ --release → Cargo builds in release mode
+ foo → Cargo filters to tests containing "foo"
+ -- → separator
+ --test-threads=1 → test binary runs one test at a time
+
+*/
+
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
 }
@@ -8,6 +21,11 @@ fn add_two(n: u64) -> u64 {
 
 fn greeting(name: &str) -> String {
     format!("Hello {name}!")
+}
+
+fn prints_and_returns_10(a: i32) -> i32 {
+    println!("I got the value {a}");
+    10
 }
 
 // needs to implement Debug & PartialEq for assert_eq!
@@ -136,4 +154,22 @@ mod tests {
             Err(String::from("2 + 2 did not equal 4"))
         }
     }
+
+    // Src code prints_and_returns_10 has println
+    // Passing test hides std output (printlns) by default
+    // `cargo test -- --show-output` to show them
+    #[test]
+    fn this_test_will_pass() {
+        let value = prints_and_returns_10(4);
+        assert_eq!(value, 10);
+    }
+
+    // see output here bc test fails
+    #[test]
+    fn this_test_will_fail() {
+        let value = prints_and_returns_10(8);
+        assert_eq!(value, 5);
+    }
+
+    // TODO: left off https://doc.rust-lang.org/book/ch11-02-running-tests.html#running-a-subset-of-tests-by-name
 }
