@@ -15,7 +15,7 @@ pub fn add(left: u64, right: u64) -> u64 {
     left + right
 }
 
-fn add_two(n: u64) -> u64 {
+pub fn add_two(n: u64) -> u64 {
     n + 2
 }
 
@@ -29,8 +29,7 @@ fn prints_and_returns_10(a: i32) -> i32 {
 }
 
 // needs to implement Debug & PartialEq for assert_eq!
-#[derive(Debug)]
-#[derive(PartialEq)] // 
+#[derive(Debug, PartialEq)] // 
 struct Rectangle {
     width: u32,
     height: u32,
@@ -42,10 +41,7 @@ impl Rectangle {
     }
 
     fn new_with_height(height: u32) -> Self {
-        Self {
-            width: 30,
-            height,
-        }
+        Self { width: 30, height }
     }
 }
 
@@ -118,10 +114,7 @@ mod tests {
     fn test_new_with_height() {
         let height = 40;
         let result = Rectangle::new_with_height(height);
-        let expected = Rectangle {
-            width: 30,
-            height,
-        };
+        let expected = Rectangle { width: 30, height };
 
         // requires Debug & PartialEq for assert_eq!
         assert_eq!(result, expected);
@@ -133,7 +126,7 @@ mod tests {
 
         assert!(
             result.contains("Carol"),
-            "Greeting did not contain name, value was `{result}`", 
+            "Greeting did not contain name, value was `{result}`",
         );
     }
 
@@ -166,10 +159,9 @@ mod tests {
 
     // see output here bc test fails
     #[test]
+    #[ignore] // failing on purpose
     fn this_test_will_fail() {
         let value = prints_and_returns_10(8);
         assert_eq!(value, 5);
     }
-
-    // TODO: left off https://doc.rust-lang.org/book/ch11-02-running-tests.html#running-a-subset-of-tests-by-name
 }
