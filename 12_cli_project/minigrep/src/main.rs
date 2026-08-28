@@ -11,6 +11,8 @@ fn main() {
     let contents = fs::read_to_string(config.file_path).expect("Error reading file");
 
     println!("With text: {contents}");
+
+    // TODO: left off https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#creating-a-constructor-for-config
 }
 
 struct Config {

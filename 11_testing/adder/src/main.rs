@@ -6,4 +6,3 @@
 fn main() {
     adder::add(2, 2 );
 }
-// TODO: left off https://doc.rust-lang.org/book/ch12-00-an-io-project.html
