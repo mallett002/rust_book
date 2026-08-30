@@ -4,15 +4,13 @@ use std::fs;
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let config = parse_config(&args);
+    let config = Config::new(&args);
 
     println!("Searching for {} in {}", config.query, config.file_path);
 
     let contents = fs::read_to_string(config.file_path).expect("Error reading file");
 
     println!("With text: {contents}");
-
-    // TODO: left off https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#creating-a-constructor-for-config
 }
 
 struct Config {
@@ -20,12 +18,18 @@ struct Config {
     file_path: String,
 }
 
-fn parse_config(args: &[String]) -> Config {
-    let query = args[1].clone();
-    let file_path = args[2].clone();
+impl Config {
+    fn new(args: &[String]) -> Config {
+        // ensure we have enough args
+        if args.len() < 3 {
+            panic!("Not enough arguments");
+        }
 
-    Config {
-        query,
-        file_path,
+        // parse the arguments
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+
+        // create the config
+        Config { query, file_path }
     }
 }
