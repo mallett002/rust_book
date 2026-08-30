@@ -14,11 +14,10 @@ fn main() {
 
     println!("Searching for {} in {}", config.query, config.file_path);
 
-    run(config).unwrap_or_else(|err| {
-        println!("run error: {err}");
-    });
-
-    // TODO: working on https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#handling-errors-returned-from-run-in-main
+    if let Err(err) = run(config) {
+        println!("Application error: {err}");
+        process::exit(1);
+    }
 }
 
 struct Config {
@@ -49,4 +48,6 @@ fn run(config: Config) -> Result<(), Box<dyn Error>> {
     println!("With text: {contents}");
 
     Ok(())
+
+    // TODO: left off // TODO: working on https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#handling-errors-returned-from-run-in-main
 }
