@@ -1,7 +1,9 @@
 use std::env;
+use std::error::Error;
 use std::fs;
 use std::process;
 
+// main is only in charge of parsing the arguments and sending them to the run fn
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -12,10 +14,11 @@ fn main() {
 
     println!("Searching for {} in {}", config.query, config.file_path);
 
-    let contents = fs::read_to_string(config.file_path).expect("Error reading file");
+    run(config).unwrap_or_else(|err| {
+        println!("run error: {err}");
+    });
 
-    println!("With text: {contents}");
-    // TODO: left off https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#extracting-logic-from-main
+    // TODO: working on https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#handling-errors-returned-from-run-in-main
 }
 
 struct Config {
@@ -38,4 +41,12 @@ impl Config {
         // create the config
         Ok(Config { query, file_path })
     }
+}
+
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(config.file_path)?;
+
+    println!("With text: {contents}");
+
+    Ok(())
 }
