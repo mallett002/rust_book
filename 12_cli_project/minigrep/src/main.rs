@@ -3,6 +3,8 @@ use std::error::Error;
 use std::fs;
 use std::process;
 
+use minigrep::search;
+
 // main is only in charge of parsing the arguments and sending them to the run fn
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -11,8 +13,6 @@ fn main() {
         println!("Problem parsing arguments: {err}");
         process::exit(1);
     });
-
-    println!("Searching for {} in {}", config.query, config.file_path);
 
     if let Err(err) = run(config) {
         println!("Application error: {err}");
@@ -45,9 +45,9 @@ impl Config {
 fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
-    println!("With text: {contents}");
+    for line in search(&config.query, &contents) {
+        println!("{line}");
+    }
 
     Ok(())
-
-    // TODO: left off // TODO: working on https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#handling-errors-returned-from-run-in-main
 }
