@@ -12,20 +12,39 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     result
 }
 
-// TODO: left off https://doc.rust-lang.org/book/ch12-04-testing-the-librarys-functionality.html#iterating-through-lines-with-the-lines-method
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    unimplemented!();
+}
 
 #[cfg(test)]
 mod tests {
-   use super::*; 
+    use super::*;
 
     #[test]
-    fn one_result() {
+    fn case_sensitive() {
         let query = "duct";
         let contents = "\
 Rust:
 safe, fast, productive.
-Pick three.";
+Pick three.
+Duct tape.";
 
         assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+    }
+
+    // TODO: left off (failing test) `https://doc.rust-lang.org/book/ch12-05-working-with-environment-variables.html#writing-a-failing-test-for-case-insensitive-search`
+    #[test]
+    fn case_insensitive() {
+        let query = "rUst";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Trust me.";
+
+        assert_eq!(
+            vec!["Rust:", "Trust me."],
+            search_case_insensitive(query, contents)
+        );
     }
 }
