@@ -24,8 +24,6 @@ fn main() {
         eprintln!("Application error: {err}");
         process::exit(1);
     }
-
-    // TODO: left off (next up!) https://doc.rust-lang.org/book/ch13-00-functional-features.html
 }
 
 struct Config {
