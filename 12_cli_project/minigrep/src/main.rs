@@ -16,12 +16,12 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     let config = Config::build(&args).unwrap_or_else(|err| {
-        println!("Problem parsing arguments: {err}");
+        eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
 
     if let Err(err) = run(config) {
-        println!("Application error: {err}");
+        eprintln!("Application error: {err}");
         process::exit(1);
     }
 }
@@ -87,7 +87,7 @@ fn parse_flags(args: &[String]) -> bool {
     let key = key_val_iterator.next().unwrap();
 
     if key != "--ignore_case" {
-        println!("invalid flag: {key}");
+        eprintln!("invalid flag: {key}");
         process::exit(1);
     }
 
