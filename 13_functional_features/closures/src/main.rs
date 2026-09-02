@@ -1,3 +1,5 @@
+use std::thread;
+
 #[derive(Debug, PartialEq, Copy, Clone)]
 enum ShirtColor {
     Red,
@@ -41,17 +43,89 @@ fn main() {
     let giveaway_1 = store.giveaway(user_pref1);
     println!(
         "The user with preference {:?} gets {:?}",
-        user_pref1,
-        giveaway_1,
+        user_pref1, giveaway_1,
     );
-    
+
     let user_pref2 = None;
     let giveaway_2 = store.giveaway(user_pref2);
     println!(
         "The user with preference {:?} gets {:?}",
-        user_pref2,
-        giveaway_2,
+        user_pref2, giveaway_2,
     );
 
-    // TODO: left off https://doc.rust-lang.org/book/ch13-01-closures.html#inferring-and-annotating-closure-types
+    more_closures();
+}
+
+fn more_closures() {
+    inferring_types();
+    ownership();
+
+    // TODO: left off https://doc.rust-lang.org/book/ch13-01-closures.html#moving-captured-values-out-of-closures
+}
+
+fn inferring_types() {
+    // inferring types
+    let add_one = |x: u32| x + 1;
+
+    // no types
+    let example_closure = |x| x;
+
+    // gets type String from here:
+    let s = example_closure(String::from("hello"));
+
+    // cannot use an int now:
+    // let n = example_closure(5); // already got the String type on it
+}
+
+fn ownership() {
+    /* Closure can capture values in 3 ways (same 3 ways functions take params):
+    - Borrow immutably
+    - Borrow mutably
+    - Taking ownership*/
+
+    // Closure decides which option to take!
+    immutable_ref();
+    mutable_ref();
+    move_ownership();
+}
+
+// only immutable borrow needed here, so that's what compiler does:
+fn immutable_ref() {
+    // Only borrows immutably:
+    let list = vec![1, 2, 3];
+    println!("Before defining closure {list:?}");
+
+    let only_borrows = || println!("From closure {list:?}");
+
+    println!("Before calling closure {list:?}");
+    only_borrows();
+    println!("After calling closure {list:?}");
+}
+
+// Since we're mutating the list, a mutable reference is needed here
+fn mutable_ref() {
+    let mut list = vec![1, 2, 3];
+    println!("Before defining closure {list:?}");
+
+    let mut borrows_mutably = || list.push(4); // captures mutable ref to list here
+
+    // can't use list here - borrowed as mut ref
+    // no other borrows allowed when there's a mutable borrow
+    // println!("Before calling closure {list:?}");
+    borrows_mutably();
+    println!("After calling closure {list:?}");
+}
+
+// a move of ownership is needed here to ensure list is valid whole lifetime of new thread
+fn move_ownership() {
+    let mut list = vec![1, 2, 3];
+    println!("Before defining closure {list:?}");
+
+    // "move" keyword: force the closure to take ownership of list
+    thread::spawn(move || println!("From closure {list:?}"))
+        .join()
+        .unwrap();
+
+    // can't use list now - moved into spawn's closure
+    // println!("After calling closure {list:?}");
 }
