@@ -19,7 +19,7 @@
 - when function execution ends, those values dropped (popped off stack, de-allocation)
 
 ## Ownership Rules
-1. Every values has an owner
+1. Every value has an owner
 2. A value can only have 1 owner at a time
 3. When owner goes out of scope, the value will be dropped
 
