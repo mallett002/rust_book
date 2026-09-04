@@ -54,13 +54,15 @@ fn main() {
     );
 
     more_closures();
+    fn_once_example();
+    fn_mut_example();
+    // TODO: left off here https://doc.rust-lang.org/book/ch13-01-closures.html#moving-captured-values-out-of-closures
+    // search for "n contrast, Listing 13-8 shows an example of a closure that implements just the FnOnce trait"
 }
 
 fn more_closures() {
     inferring_types();
     ownership();
-
-    // TODO: left off https://doc.rust-lang.org/book/ch13-01-closures.html#moving-captured-values-out-of-closures
 }
 
 fn inferring_types() {
@@ -107,7 +109,7 @@ fn mutable_ref() {
     let mut list = vec![1, 2, 3];
     println!("Before defining closure {list:?}");
 
-    let mut borrows_mutably = || list.push(4); // captures mutable ref to list here
+    let mut borrows_mutably = || list.push(4); // captures mutable ref on "list" here
 
     // can't use list here - borrowed as mut ref
     // no other borrows allowed when there's a mutable borrow
@@ -118,7 +120,7 @@ fn mutable_ref() {
 
 // a move of ownership is needed here to ensure list is valid whole lifetime of new thread
 fn move_ownership() {
-    let mut list = vec![1, 2, 3];
+    let list = vec![1, 2, 3];
     println!("Before defining closure {list:?}");
 
     // "move" keyword: force the closure to take ownership of list
@@ -128,4 +130,81 @@ fn move_ownership() {
 
     // can't use list now - moved into spawn's closure
     // println!("After calling closure {list:?}");
+}
+
+/* Closure traits:
+ - FnOnce - Moves captured values out of its body - can only be called once (like .unwrap_or_else on Option)
+ - FnMut - Can be called multiple times and may mutate the value that is captured in closure
+ - Fn - called more than once & don't mutate captured values (implements FnMut - any Fn is also
+ Fn mut)
+
+ Fn ⊂ FnMut ⊂ FnOnce: ("⊂" means "is subset of") (ex: cat ⊂ feline ⊂ mammal)
+    - FnOnce  accepts: FnOnce, FnMut, Fn
+    - FnMut   accepts: FnMut, Fn
+    - Fn      accepts: Fn
+
+Broadest (most general)
+│
+▼
+FnOnce    ← any closure, but can only be called ONCE
+│
+FnMut     ← can be called MULTIPLE times, may mutate captured state
+│
+Fn        ← can be called MULTIPLE times, NO mutation
+│
+▲
+Narrowest (most restrictive)
+*/
+
+// 1. Ex for FnOnce (how unwrap_or_else is defined on Option):
+enum MyOption<T> {
+    None,
+    Some(T),
+}
+
+// how unwrap_or_else is defined on Option:
+impl<T> MyOption<T> {
+    pub fn unwrap_or_else_definition<F>(self, f: F) -> T
+    where
+        F: FnOnce() -> T,
+    {
+        match self {
+            MyOption::Some(x) => x,
+            MyOption::None => f(),
+        }
+    }
+}
+
+fn fn_once_example() {
+    // See above snippet ^^
+}
+
+// 2. Ex. for FnMut with .sort_by_key
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn fn_mut_example() {
+    let mut list = [
+        Rectangle {
+            width: 5,
+            height: 2,
+        },
+        Rectangle {
+            width: 10,
+            height: 29,
+        },
+        Rectangle {
+            width: 7,
+            height: 3,
+        },
+    ];
+
+    // Uses FnMut closure bc called on list mult times (once for each item in list)
+    list.sort_by_key(|r| r.width);
+
+    // pretty print it with the :#?
+    println!("{list:#?}");
 }
