@@ -56,8 +56,6 @@ fn main() {
     more_closures();
     fn_once_example();
     fn_mut_example();
-    // TODO: left off here https://doc.rust-lang.org/book/ch13-01-closures.html#moving-captured-values-out-of-closures
-    // search for "n contrast, Listing 13-8 shows an example of a closure that implements just the FnOnce trait"
 }
 
 fn more_closures() {
@@ -176,7 +174,46 @@ impl<T> MyOption<T> {
 }
 
 fn fn_once_example() {
-    // See above snippet ^^
+    // Ex 1. See above snippet for how unwrap_or_else is defined (implements FnOnce)
+
+    // Ex 2. FnMut closure attempting to do FnOnce things:
+    let mut list = [
+        Rectangle {
+            width: 5,
+            height: 2,
+        },
+        Rectangle {
+            width: 10,
+            height: 29,
+        },
+        Rectangle {
+            width: 7,
+            height: 3,
+        },
+    ];
+
+    let mut sort_operations: Vec<String> = vec![];
+    let value = String::from("closure called");
+
+    // Issue here: sort_by_key uses FnMut but requires FnOnce for this to work
+    list.sort_by_key(|r| {
+        // sort_by_key implements FnMut, but FnOnce is needed (need to be able to call mult times)
+        // 2nd iteration, "value" won't be there bc it was moved
+        // sort_operations.push(value); // captures value, sends ownership to the sort_operations vec
+        r.width 
+    });
+
+    println!("{list:#?}");
+
+    // Ex 3. Fix Ex 2:
+    let mut num_sort_operations = 0;
+
+    list.sort_by_key(|r| {
+        num_sort_operations += 1; // captures mut ref to counter; can be called more than once
+        r.width 
+    });
+
+    println!("{list:#?}, sorted in {num_sort_operations} operations");
 }
 
 // 2. Ex. for FnMut with .sort_by_key
