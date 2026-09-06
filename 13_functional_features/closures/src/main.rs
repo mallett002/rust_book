@@ -200,7 +200,7 @@ fn fn_once_example() {
         // sort_by_key implements FnMut, but FnOnce is needed (need to be able to call mult times)
         // 2nd iteration, "value" won't be there bc it was moved
         // sort_operations.push(value); // captures value, sends ownership to the sort_operations vec
-        r.width 
+        r.width
     });
 
     println!("{list:#?}");
@@ -210,7 +210,7 @@ fn fn_once_example() {
 
     list.sort_by_key(|r| {
         num_sort_operations += 1; // captures mut ref to counter; can be called more than once
-        r.width 
+        r.width
     });
 
     println!("{list:#?}, sorted in {num_sort_operations} operations");
