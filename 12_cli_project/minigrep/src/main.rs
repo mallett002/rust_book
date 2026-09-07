@@ -13,9 +13,7 @@ use minigrep::search_case_insensitive;
 
 // main is only in charge of parsing the arguments and sending them to the run fn
 fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    let config = Config::build(&args).unwrap_or_else(|err| {
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
@@ -32,10 +30,21 @@ struct Config {
     ignore_case: bool,
 }
 
+// new way with iterators
 impl Config {
     // Returns result of success (Config) and Error (string literal)
-    fn build(args: &[String]) -> Result<Config, &'static str> {
-        // ensure we have enough args
+    fn build(
+        mut args: impl Iterator<Item = String>
+    ) -> Result<Config, &'static str> {
+        args.next(); // move passed first item (name of program, we don't care ab it)
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Not enough arguments")
+        };
+
+        // TODO: left off https://doc.rust-lang.org/book/ch13-03-improving-our-io-project.html#using-iterator-trait-methods
+
         if args.len() < 3 {
             return Err("Not enough arguments");
         }
@@ -60,6 +69,36 @@ impl Config {
         })
     }
 }
+
+// old way without iterators
+// impl Config {
+//     // Returns result of success (Config) and Error (string literal)
+//     fn build(args: &[String]) -> Result<Config, &'static str> {
+//         // ensure we have enough args
+//         if args.len() < 3 {
+//             return Err("Not enough arguments");
+//         }
+//
+//         // parse the arguments
+//         let query = args[1].clone();
+//         let file_path = args[2].clone();
+//
+//         // set ignore_case from env var
+//         let mut ignore_case = env::var("IGNORE_CASE").is_ok();
+//
+//         // check for --ignore_case flag (overrides env var)
+//         if args.len() > 3 {
+//             ignore_case = parse_flags(args);
+//         }
+//
+//         // create the config
+//         Ok(Config {
+//             query,
+//             file_path,
+//             ignore_case,
+//         })
+//     }
+// }
 
 fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
