@@ -24,7 +24,8 @@ struct Shoe {
     style: String,
 }
 
-// into_iter takes ownership over the shoes Vector
+// shoes_in_size takes ownership of shoes Vec from caller
+// into_iter takes ownership over the shoes Vector inside this function's scope
 fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
     shoes.into_iter().filter(|s| s.size == shoe_size).collect()
 }
