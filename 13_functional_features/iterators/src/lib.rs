@@ -18,6 +18,17 @@ pub trait MyIterator {
     // methods with default implementations...
 }
 
+#[derive(Debug, PartialEq)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+// into_iter takes ownership over the shoes Vector
+fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -64,7 +75,43 @@ mod tests {
         // .map does not consume the iterator
         // .collect here consumes the iterator and puts it into a vector
         let v2: Vec<i32> = v1.iter().map(|x| x + 1).collect();
-        
+
         assert_eq!(v2, vec![2, 3, 4]);
+    }
+
+    #[test]
+    fn filters_by_size() {
+        let shoes = vec![
+            Shoe {
+                size: 10,
+                style: String::from("Nike"),
+            },
+            Shoe {
+                size: 13,
+                style: String::from("Reebok"),
+            },
+            Shoe {
+                size: 10,
+                style: String::from("Adidas"),
+            },
+        ];
+
+        let my_shoes = shoes_in_size(shoes, 10);
+
+        assert_eq!(
+            my_shoes,
+            vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("Nike"),
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("Adidas"),
+                }
+            ]
+        );
+
+        // println!("{shoes:?}"); // can't use shoes here. shoes_in_size took ownership
     }
 }

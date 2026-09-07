@@ -29,7 +29,7 @@ fn prints_and_returns_10(a: i32) -> i32 {
 }
 
 // needs to implement Debug & PartialEq for assert_eq!
-#[derive(Debug, PartialEq)] // 
+#[derive(Debug, PartialEq)]
 struct Rectangle {
     width: u32,
     height: u32,
