@@ -53,6 +53,18 @@ mod tests {
         assert_eq!(total, 6);
     }
 
-    // TODO: left off https://doc.rust-lang.org/book/ch13-02-iterators.html#methods-that-produce-other-iterators
+    #[test]
+    fn iterator_adapters() {
+        // Don't consume the iterator
+        // Produce other iterators - change something w/ original iterator
+        // ex: map
 
+        let v1: Vec<i32> = vec![1, 2, 3];
+
+        // .map does not consume the iterator
+        // .collect here consumes the iterator and puts it into a vector
+        let v2: Vec<i32> = v1.iter().map(|x| x + 1).collect();
+        
+        assert_eq!(v2, vec![2, 3, 4]);
+    }
 }
