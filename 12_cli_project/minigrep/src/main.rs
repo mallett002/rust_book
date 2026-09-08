@@ -33,33 +33,23 @@ struct Config {
 // new way with iterators
 impl Config {
     // Returns result of success (Config) and Error (string literal)
-    fn build(
-        mut args: impl Iterator<Item = String>
-    ) -> Result<Config, &'static str> {
-        args.next(); // move passed first item (name of program, we don't care ab it)
+    fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+        args.next(); // skip first item (name of program, we don't care ab it)
 
         let query = match args.next() {
             Some(arg) => arg,
-            None => return Err("Not enough arguments")
+            None => return Err("Not enough arguments"),
         };
 
-        // TODO: left off https://doc.rust-lang.org/book/ch13-03-improving-our-io-project.html#using-iterator-trait-methods
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Not enough arguments"),
+        };
 
-        if args.len() < 3 {
-            return Err("Not enough arguments");
-        }
-
-        // parse the arguments
-        let query = args[1].clone();
-        let file_path = args[2].clone();
-
-        // set ignore_case from env var
-        let mut ignore_case = env::var("IGNORE_CASE").is_ok();
-
-        // check for --ignore_case flag (overrides env var)
-        if args.len() > 3 {
-            ignore_case = parse_flags(args);
-        }
+        let ignore_case = match args.next() {
+            Some(arg) => parse_ignore_case(arg),
+            None => env::var("IGNORE_CASE").is_ok(),
+        };
 
         // create the config
         Ok(Config {
@@ -70,7 +60,7 @@ impl Config {
     }
 }
 
-// old way without iterators
+// build method old way (without iterators)
 // impl Config {
 //     // Returns result of success (Config) and Error (string literal)
 //     fn build(args: &[String]) -> Result<Config, &'static str> {
@@ -116,13 +106,8 @@ fn run(config: Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-// I added this
-fn parse_flags(args: &[String]) -> bool {
-    let flag = args[3].clone();
-
-    // ensure it's --ignore_case=true|false
+fn parse_ignore_case(flag: String) -> bool {
     let mut key_val_iterator = flag.split("=");
-
     let key = key_val_iterator.next().unwrap();
 
     if key != "--ignore_case" {
