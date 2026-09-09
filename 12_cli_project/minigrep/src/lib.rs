@@ -1,28 +1,39 @@
 // 'a: "Returned &str in Vec are only valid as long as contents (param) are"
 // data returned by search will live as long as data in "contents" param
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut result = Vec::new();
+    // let mut result = Vec::new();
+    //
+    // for line in contents.lines() {
+    //     if line.contains(query) {
+    //         result.push(line);
+    //     }
+    // }
+    //
+    // result
 
-    for line in contents.lines() {
-        if line.contains(query) {
-            result.push(line);
-        }
-    }
-
-    result
+    contents
+        .lines()
+        .filter(|l| l.contains(query))
+        .collect()
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
-    let mut result = Vec::new();
 
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            result.push(line);
-        }
-    }
+    // let mut result = Vec::new();
+    //
+    // for line in contents.lines() {
+    //     if line.to_lowercase().contains(&query) {
+    //         result.push(line);
+    //     }
+    // }
+    //
+    // result
 
-    result
+    contents
+        .lines()
+        .filter(|l| l.to_lowercase().contains(&query))
+        .collect()
 }
 
 #[cfg(test)]
