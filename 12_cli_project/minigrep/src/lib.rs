@@ -1,6 +1,6 @@
 // 'a: "Returned &str in Vec are only valid as long as contents (param) are"
 // data returned by search will live as long as data in "contents" param
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn search<'a>(query: &str, contents: &'a str) -> impl Iterator<Item = &'a str> {
     // let mut result = Vec::new();
     //
     // for line in contents.lines() {
@@ -11,10 +11,9 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     //
     // result
 
-    contents
-        .lines()
-        .filter(|l| l.contains(query))
-        .collect()
+    let query = query.to_string();
+
+    contents.lines().filter(move |l| l.contains(&query))
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
