@@ -93,10 +93,14 @@ impl Config {
 fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
-    let results = if config.ignore_case {
-        search_case_insensitive(&config.query, &contents)
+    let results: Vec<&str> = if config.ignore_case {
+        let case_insensitive_results = search_case_insensitive(&config.query, &contents);
+
+        case_insensitive_results.collect()
     } else {
-        search(&config.query, &contents)
+        let case_sensitive_results = search(&config.query, &contents);
+
+        case_sensitive_results.collect()
     };
 
     for line in results {
