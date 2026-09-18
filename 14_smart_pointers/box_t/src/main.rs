@@ -20,6 +20,4 @@ fn main() {
     let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
 
     println!("quack: {list:?}");
-
-    // TODO: left off https://doc.rust-lang.org/book/ch15-02-deref.html
 }
