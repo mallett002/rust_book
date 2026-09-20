@@ -5,8 +5,7 @@ fn main() {
     using_box_like_ref();
     defining_own_smart_pointer();
     deref_coercion();
-
-    // TODO: left off https://doc.rust-lang.org/book/ch15-02-deref.html#using-deref-coercion-in-functions-and-methods
+    deref_coercion_mutable();
 }
 
 fn following_ref_to_value() {
@@ -74,4 +73,22 @@ fn deref_coercion() {
     // [..] and & ->  takes string slice (&str) of the whole string 
 
     hello(derefed);
+}
+
+fn deref_coercion_mutable() {
+    /*    
+    *    Rust does deref coercion when:
+    *
+    *       From &T to &U when `T: Deref<Target=U>`
+    *           "You have a &T and T implements Deref to type U, you can get a &U transparently"
+    *
+    *       From &mut T to &mut U when `T: DerefMut<Target=U>`
+    *           "Same as above, but just with mutable"
+    *
+    *       From &mut T to &U when `T: Deref<Target=U>`
+    *           "You have a &mut T and T implements Deref to type U, you can get a &U transparently"
+    *
+    *           - You can coerce to an imutable type, but never the other way around! (can't coerce
+    *           from immutable to mutable)
+    */
 }
