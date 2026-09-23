@@ -63,6 +63,4 @@ fn use_ref_counting_instead() {
 
     // a won't be cleaned up until no more references to it
     // i.e. no one is watching the TV anymore.
-
-    // TODO: left off https://doc.rust-lang.org/book/ch15-04-rc.html#cloning-to-increase-the-reference-count
 }
