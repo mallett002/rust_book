@@ -39,15 +39,18 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::cell::RefCell;
 
+    // Fix: store sent_messages in a RefCell
+    // so send method can modify the &self sent_messages
     struct MockMessenger {
-        sent_messages: Vec<String>,
+        sent_messages: RefCell<Vec<String>>,
     }
 
     impl MockMessenger {
         fn new() -> MockMessenger {
             MockMessenger {
-                sent_messages: vec![]
+                sent_messages: RefCell::new(vec![]) // Fix: wrap the vec in a refcell
             }
         }
     }
@@ -57,7 +60,7 @@ mod tests {
 
         // "fake" send to keep capture messages to assert on
         fn send(&self, msg: &str) {
-            self.sent_messages.push(msg.to_string());
+            self.sent_messages.borrow_mut().push(msg.to_string()); // Fix: get mutable borrow to push to
         }
     }
 
@@ -68,8 +71,9 @@ mod tests {
 
         tracker.set_value(80);
 
-        assert_eq!(mock_messenger.sent_messages.len(), 1);
+        // Fix: get immutable borrow to inspect the sent messages
+        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1); 
     }
 
-    // TODO: left off https://doc.rust-lang.org/book/ch15-05-interior-mutability.html#listing-15-21
+    // TODO: left off https://doc.rust-lang.org/book/ch15-05-interior-mutability.html#tracking-borrows-at-runtime
 }
