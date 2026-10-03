@@ -39,8 +39,10 @@ fn main() {
     //  a: Cons(5, b)
     //  b: Cons(10, a)
     if let Some(link) = a.tail() {
-       *link.borrow_mut() = Rc::clone(&b);
+        *link.borrow_mut() = Rc::clone(&b);
     }
+
+    println!("pointed 'a's tail back to b");
 
     println!("b rc count: {:?}", Rc::strong_count(&b));
     println!("a rc count: {:?}", Rc::strong_count(&a));
