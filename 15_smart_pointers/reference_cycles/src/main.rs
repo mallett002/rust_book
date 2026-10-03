@@ -44,9 +44,12 @@ fn main() {
 
     println!("pointed 'a's tail back to b");
 
-    println!("b rc count: {:?}", Rc::strong_count(&b));
-    println!("a rc count: {:?}", Rc::strong_count(&a));
+    println!("b rc count: {:?}", Rc::strong_count(&b)); // count: 2
+    println!("a rc count: {:?}", Rc::strong_count(&a)); // count: 2
 
     // This will overflow the stack
     // println!("a next item: {:?}", a.tail());
+
+    // Issue: at end of main, ref count of "a" and "b" will go to 1 (not 0) bc they were dropped
+    // So, memory for "a" and "b" won't be dropped (dangling memory leak that won't be cleand up)
 }
