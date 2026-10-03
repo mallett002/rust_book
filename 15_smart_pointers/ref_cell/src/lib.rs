@@ -74,6 +74,4 @@ mod tests {
         // Fix: get immutable borrow to inspect the sent messages
         assert_eq!(mock_messenger.sent_messages.borrow().len(), 1); 
     }
-
-    // TODO: left off https://doc.rust-lang.org/book/ch15-05-interior-mutability.html#tracking-borrows-at-runtime
 }

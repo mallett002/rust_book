@@ -53,3 +53,7 @@ fn main() {
     // Issue: at end of main, ref count of "a" and "b" will go to 1 (not 0) bc they were dropped
     // So, memory for "a" and "b" won't be dropped (dangling memory leak that won't be cleand up)
 }
+
+fn onwership_relationships() {
+    // TODO: left off https://doc.rust-lang.org/book/ch15-06-reference-cycles.html#preventing-reference-cycles-using-weakt
+}
