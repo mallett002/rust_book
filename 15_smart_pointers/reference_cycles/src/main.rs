@@ -52,6 +52,7 @@ fn main() {
 
     // Issue: at end of main, ref count of "a" and "b" will go to 1 (not 0) bc they were dropped
     // So, memory for "a" and "b" won't be dropped (dangling memory leak that won't be cleand up)
+    // Can potentially use ownership relatioships to fix this issue
 }
 
 fn onwership_relationships() {
