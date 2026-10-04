@@ -2,7 +2,7 @@
 
 /*
 *   RefCell<T>:
-*       - How we implement the interir mutability pattern
+*       - How we implement the interior mutability pattern
 *       - Can only have 1 owner
 *       - Checked at runtime, not compile time
 *       - Can have mutable and immutable refs
