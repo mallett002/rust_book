@@ -100,6 +100,8 @@ fn onwership_relationships() {
 
     // set branch to be owner of leaf
     *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
+    // get interior mut borrow of parent RefCell<T>
+    // set it to a Weak ref to branch
 
     println!("leaf parent = {:#?}", leaf.parent.borrow().upgrade());
 
