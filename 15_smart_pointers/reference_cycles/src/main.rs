@@ -65,6 +65,8 @@ fn example_cycle() {
 // Want to share ownership with variables so we can access each node in tree
 // So, use Vec<Rc<Node>> as children
 // Also, want to modify which nodes are children of other nodes (RefCell)
+// children use Rc. A node owns its children
+// parent uses Weak, so kids don't keep parents alive
 #[derive(Debug)]
 struct Node {
     value: i32,
