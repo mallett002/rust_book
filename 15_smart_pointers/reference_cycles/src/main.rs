@@ -1,5 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::rc::Weak;
 
 use crate::List::{Cons, Nil};
 
@@ -19,6 +20,11 @@ impl List {
 }
 
 fn main() {
+    // example_cycle();
+    onwership_relationships();
+}
+
+fn example_cycle() {
     // Example Cycle:
 
     // Create "a" cons list: Cons(5, Nil)
@@ -55,6 +61,47 @@ fn main() {
     // Can potentially use ownership relatioships to fix this issue
 }
 
+// A node owns its children
+// Want to share ownership with variables so we can access each node in tree
+// So, use Vec<Rc<Node>> as children
+// Also, want to modify which nodes are children of other nodes (RefCell)
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    children: RefCell<Vec<Rc<Node>>>,
+    parent: RefCell<Weak<Node>>,
+}
+
 fn onwership_relationships() {
-    // TODO: left off https://doc.rust-lang.org/book/ch15-06-reference-cycles.html#preventing-reference-cycles-using-weakt
+    // Weak count doesn't need to be 0 for Rc<T> to be cleaned up
+    // downgrade() creates a weak ref - increases weak_count
+
+    // Parent should own its children (if parent dropped, child dropped)
+    // Child shouldn't own parent (if child dropped, parent not)
+    // If parent type was Rc<T>, would cause ref cycle. incoming Weak<T>
+
+    // create a leaf node
+    let leaf = Rc::new(Node {
+        value: 3,
+        children: RefCell::new(vec![]),
+        parent: RefCell::new(Weak::new()), // leaf doesn't own parent
+    });
+
+    // See of leaf has a parent (upgrade called to check if ref exists)
+    // Need to call upgrade since a weak ref might not be pointing to anything anymore
+    println!("leaf parent = {:#?}", leaf.parent.borrow().upgrade());
+
+    // create a branch that holds leaf. leaf now has 2 owners
+    let branch = Rc::new(Node {
+        value: 5,
+        children: RefCell::new(vec![Rc::clone(&leaf)]),
+        parent: RefCell::new(Weak::new()),
+    });
+
+    // set branch to be owner of leaf
+    *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
+
+    println!("leaf parent = {:#?}", leaf.parent.borrow().upgrade());
+
+    // TODO: left off https://doc.rust-lang.org/book/ch15-06-reference-cycles.html#visualizing-changes-to-strong_count-and-weak_count
 }
