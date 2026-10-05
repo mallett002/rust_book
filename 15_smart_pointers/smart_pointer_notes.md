@@ -8,6 +8,7 @@
 
 ## Rc<T> (reference counting)
 - Allows you to have multiple owners of a value
+- multiple pointers pointing to same piece of memory
 - Will stay in scope until all owners have finished with it (out of scope)
 - "Poeple watching TV" analogy
 
