@@ -1,4 +1,4 @@
-// Interior mutability: mutate data even when there are immutable references it.
+// Interior mutability: mutate data even when there are immutable references to it.
 
 /*
 *   RefCell<T>:
