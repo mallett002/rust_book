@@ -21,7 +21,8 @@ impl List {
 
 fn main() {
     // example_cycle();
-    onwership_relationships();
+    // onwership_relationships();
+    ownership_relationships_visualized();
 }
 
 fn example_cycle() {
@@ -106,6 +107,50 @@ fn onwership_relationships() {
     // set it to a Weak ref to branch
 
     println!("leaf parent = {:#?}", leaf.parent.borrow().upgrade());
+}
 
-    // TODO: left off https://doc.rust-lang.org/book/ch15-06-reference-cycles.html#visualizing-changes-to-strong_count-and-weak_count
+fn ownership_relationships_visualized() {
+    // https://doc.rust-lang.org/book/ch15-06-reference-cycles.html#visualizing-changes-to-strong_count-and-weak_count
+    let leaf = Rc::new(Node {
+        value: 3,
+        children: RefCell::new(vec![]),
+        parent: RefCell::new(Weak::new()), // leaf doesn't own parent
+    });
+
+    println!(
+        "leaf strong = {}, weak = {}",
+        Rc::strong_count(&leaf), // 1
+        Rc::weak_count(&leaf), // 0
+    );
+
+    {
+        // create a branch that holds leaf. leaf now has 2 owners
+        let branch = Rc::new(Node {
+            value: 5,
+            children: RefCell::new(vec![Rc::clone(&leaf)]),
+            parent: RefCell::new(Weak::new()),
+        });
+
+        // set branch to be owner of leaf
+        *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
+
+        println!(
+            "branch strong = {}, weak = {}",
+            Rc::strong_count(&branch),
+            Rc::weak_count(&branch),
+        );
+
+        println!(
+            "leaf strong = {}, weak = {}",
+            Rc::strong_count(&leaf),
+            Rc::weak_count(&leaf),
+        );
+    }
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+    println!(
+        "leaf strong = {}, weak = {}",
+        Rc::strong_count(&leaf),
+        Rc::weak_count(&leaf),
+    );
 }
