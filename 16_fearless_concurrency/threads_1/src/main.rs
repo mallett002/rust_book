@@ -1,8 +1,8 @@
 use std::{thread, time::Duration};
 
 fn main() {
-    creating_new_thread();
-    // TODO: left off https://doc.rust-lang.org/book/ch16-01-threads.html#using-move-closures-with-threads
+    // creating_new_thread();
+    using_move_closures_with_threads();
 }
 
 fn creating_new_thread() {
@@ -21,5 +21,16 @@ fn creating_new_thread() {
     }
 
     // cause main thread to block and wait until spawned thread finishes
+    handle.join().unwrap();
+}
+
+fn using_move_closures_with_threads() {
+    let v = vec![1, 2, 3];
+
+    // use the "move" keyword to take ownership of v instead of borrow (ref)
+    let handle = thread::spawn(move|| {
+        println!("here's a vector: {:?}", v);
+    });
+
     handle.join().unwrap();
 }
