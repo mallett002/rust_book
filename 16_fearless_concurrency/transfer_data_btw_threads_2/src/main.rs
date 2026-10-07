@@ -11,11 +11,11 @@ use std::time::Duration;
 fn main() {
     // intro_channels();
     // transfer_ownership_thru_channels();
-    sending_mult_values();
-    // TODO: left off https://doc.rust-lang.org/book/ch16-02-message-passing.html#creating-multiple-producers
+    // _sending_mult_values();
+    creating_mult_producers();
 }
 
-fn intro_channels() {
+fn _intro_channels() {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
@@ -30,7 +30,7 @@ fn intro_channels() {
     println!("Received value: \"{val}\"");
 }
 
-fn transfer_ownership_thru_channels() {
+fn _transfer_ownership_thru_channels() {
     // same contents as intro_channels except print after send
     let (tx, rx) = mpsc::channel();
 
@@ -48,7 +48,7 @@ fn transfer_ownership_thru_channels() {
     println!("Received value: \"{val}\"");
 }
 
-fn sending_mult_values() {
+fn _sending_mult_values() {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
@@ -68,5 +68,55 @@ fn sending_mult_values() {
     // can loop over receiver
     for received in rx {
         println!("Got: {received}");
+    }
+}
+
+fn creating_mult_producers() {
+    let (tx, rx) = mpsc::channel();
+
+    // clone tx to make another producer
+    let tx1 = tx.clone();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("more"),
+            String::from("messages"),
+            String::from("for"),
+            String::from("you"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    // all producers send to this same rx
+    for received in rx {
+        println!("Got: {received}");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn shoud_work() {
+        _sending_mult_values();
     }
 }
