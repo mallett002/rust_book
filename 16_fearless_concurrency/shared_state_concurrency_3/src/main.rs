@@ -33,7 +33,9 @@ fn control_access_with_mutex() {
 fn shared_access_to_mutex() {
     // shared access to the counter (mtx_counter)
 
-    // can't use Rc here. not multi-thread safe. use Arc instead
+    // Wrap mtx_counter in Atomic Rc (Arc)
+    // To use it in new thread, needs to take ownership and we need 1..10 threads
+    // Can't use Rc here. not multi-thread safe. use Arc instead
     let mtx_counter = Arc::new(Mutex::new(0));
     let mut handles = vec![];
 
