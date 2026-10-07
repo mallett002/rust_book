@@ -5,6 +5,7 @@ use std::sync::Mutex;
 
 fn main() {
     control_access_with_mutex();
+    // TODO: left off https://doc.rust-lang.org/book/ch16-03-shared-state.html#shared-access-to-mutext
 }
 
 fn control_access_with_mutex() {
