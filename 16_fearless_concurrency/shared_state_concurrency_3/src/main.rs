@@ -1,11 +1,13 @@
 // Shared state concurrency:
 // Multiple threads can access the same location in memory at the same time
 
-use std::sync::Mutex;
+use std::thread;
+use std::sync::{Arc, Mutex};
+use std::rc::Rc;
 
 fn main() {
     control_access_with_mutex();
-    // TODO: left off https://doc.rust-lang.org/book/ch16-03-shared-state.html#shared-access-to-mutext
+    shared_access_to_mutex();
 }
 
 fn control_access_with_mutex() {
@@ -26,4 +28,30 @@ fn control_access_with_mutex() {
     // when num goes out of scope here, lock is released
 
     println!("m = {m:?}");
+}
+
+fn shared_access_to_mutex() {
+    // shared access to the counter (mtx_counter)
+
+    // can't use Rc here. not multi-thread safe. use Arc instead
+    let mtx_counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let mtx_counter = Arc::clone(&mtx_counter);
+
+        let handle = thread::spawn(move || {
+            let mut num = mtx_counter.lock().unwrap();
+
+            *num += 1;
+        });
+
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *mtx_counter.lock().unwrap());
 }
