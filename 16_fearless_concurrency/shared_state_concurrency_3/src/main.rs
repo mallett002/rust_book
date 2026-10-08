@@ -8,7 +8,6 @@ use std::rc::Rc;
 fn main() {
     control_access_with_mutex();
     shared_access_to_mutex();
-    // TODO: left off https://doc.rust-lang.org/book/ch16-03-shared-state.html#comparing-refcelltrct-and-mutextarct
 }
 
 fn control_access_with_mutex() {
