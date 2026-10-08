@@ -6,7 +6,7 @@ use trpl::Html;
 */
 
 fn main() {
-    println!("Hello, world!");
+    // TODO: left off https://doc.rust-lang.org/book/ch17-01-futures-and-syntax.html#executing-an-async-function-with-a-runtime
 }
 
 async fn page_title(url: &str) -> Option<String> {
