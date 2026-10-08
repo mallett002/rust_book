@@ -116,7 +116,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn shoud_work() {
+    fn should_work() {
         _sending_mult_values();
     }
 }
