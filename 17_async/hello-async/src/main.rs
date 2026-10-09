@@ -1,12 +1,27 @@
 use trpl::Html;
 
 /*
+* usage
+*   cargo run -- "https://www.rust-lang.org"
+*
 * - In async, rust does nothing unless you add the await keyword (unlike other languages)
 * - "futures are lazy"
+*
+* - async code needs a runtime
+* - there are many diff runtimes (some for diff use-cases)
 */
 
 fn main() {
-    // TODO: left off https://doc.rust-lang.org/book/ch17-01-futures-and-syntax.html#executing-an-async-function-with-a-runtime
+    let args: Vec<String> = std::env::args().collect();
+
+    trpl::block_on(async {
+        let url = &args[1];
+
+        match page_title(url).await {
+            Some(title) => println!("title for url {url} was {title}"),
+            None => println!("url {url} had no page title"),
+        }
+    });
 }
 
 async fn page_title(url: &str) -> Option<String> {
