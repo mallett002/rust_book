@@ -11,9 +11,22 @@ use trpl::Html;
 * - there are many diff runtimes (some for diff use-cases)
 */
 
+
+// Example state machine the async runtime runs:
+// 1. Starts one async task, hits await and looks for another async task that might need started
+// 2. Starts the other async task
+// 3. Once first await finishes, pucks back up on that one
+enum PageTitleFuture<'a> {
+    Initial { url: &'a str },
+    GetAwaitPoint { url: &'a str },
+    TextAwaitPoint { response: trpl::Response },
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
+    // block on starts an async runtime under hood
+    // it runs the future returned by async block
     trpl::block_on(async {
         let url = &args[1];
 
@@ -23,7 +36,6 @@ fn main() {
         }
     });
 
-    // TODO: left off "Each await point—that is, every place where the code uses the"
 }
 
 async fn page_title(url: &str) -> Option<String> {
