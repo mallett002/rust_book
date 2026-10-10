@@ -11,7 +11,6 @@ use trpl::Html;
 * - there are many diff runtimes (some for diff use-cases)
 */
 
-
 // Example state machine the async runtime runs:
 // 1. Starts one async task, hits await and looks for another async task that might need started
 // 2. Starts the other async task
