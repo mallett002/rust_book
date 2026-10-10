@@ -28,26 +28,37 @@ fn main() {
     // block on starts an async runtime under hood
     // it runs the future returned by async block
     trpl::block_on(async {
-        let url = &args[1];
+        let title_future_1 = page_title(&args[1]);
+        let title_future_2 = page_title(&args[2]);
 
-        match page_title(url).await {
+        let (url, maybe_title) = match trpl::select(title_future_1, title_future_2).await {
+            trpl::Either::Left(left) => left,
+            trpl::Either::Right(right) => right,
+        };
+
+        println!("{url} returned first");
+
+        match maybe_title {
             Some(title) => println!("title for url {url} was {title}"),
             None => println!("url {url} had no page title"),
         }
     });
 
+    // TODO: left off https://doc.rust-lang.org/book/ch17-01-futures-and-syntax.html#racing-two-urls-against-each-other-concurrently
 }
 
-async fn page_title(url: &str) -> Option<String> {
+async fn page_title(url: &str) -> (&str, Option<String>) {
     // let response = trpl::get(url).await;
     // let response_text = response.text().await;
 
     // could chain them together like this as well:
     let response_text = trpl::get(url).await.text().await;
 
-    Html::parse(&response_text)
+    let title = Html::parse(&response_text)
         .select_first("title")
-        .map(|title| title.inner_html()) // only runs if select_first returns Option::Some (could use match too, but .map more idiomatic)
+        .map(|title| title.inner_html()); // only runs if select_first returns Option::Some (could use match too, but .map more idiomatic)
+
+    (url, title)
 }
 
 // Block marked with async - compiles to "anonymous datatype" that implements the Future trait
