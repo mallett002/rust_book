@@ -42,7 +42,6 @@ fn main() {
             None => println!("url {url} had no page title"),
         }
     });
-    // TODO: left off https://doc.rust-lang.org/book/ch17-02-concurrency-with-async.html#applying-concurrency-with-async
 }
 
 async fn page_title(url: &str) -> (&str, Option<String>) {

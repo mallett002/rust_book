@@ -3,6 +3,7 @@ use std::time::Duration;
 fn main() {
     // spawn_async_task();
     without_spawn_task();
+    // TODO: left off https://doc.rust-lang.org/book/ch17-02-concurrency-with-async.html#sending-data-between-two-tasks-using-message-passing
 }
 
 fn spawn_async_task() {
