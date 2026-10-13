@@ -3,7 +3,9 @@ use std::time::Duration;
 fn main() {
     // spawn_async_task();
     // without_spawn_task();
-    sending_data_btw_tasks_message();
+    // sending_data_btw_tasks_message();
+    // msg_received_immediately();
+    fix_msg_received_immediately();
 }
 
 fn spawn_async_task() {
@@ -68,5 +70,64 @@ fn sending_data_btw_tasks_message() {
         let received = rx.recv().await.unwrap();
         println!("received '{received}'");
     });
+}
 
+fn msg_received_immediately() {
+    // with this, all messages come immediatelly
+    // we want them to come when they're ready, every .5 sec
+    // does everything in this async block sequentially
+    // does all the sends, then once finished, does all received
+    trpl::block_on(async {
+        let (tx, mut rx) = trpl::channel();
+
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("future"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+
+        while let Some(value) = rx.recv().await {
+            println!("received '{value}'");
+        }
+    });
+}
+
+fn fix_msg_received_immediately() {
+    // msg_received_immediately - all messages come at same time
+    // Fix: put tx & rx in own async block:
+
+    trpl::block_on(async {
+        let (tx, mut rx) = trpl::channel();
+
+        let tx_fut = async {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                // hand control to async runtime here:
+                // runtime looks for other tasks - rx_fut to process
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(value) = rx.recv().await {
+                println!("received '{value}'");
+            }
+        };
+
+        // fix: send/recv ran concurrently
+        trpl::join(tx_fut, rx_fut).await;
+    });
 }
