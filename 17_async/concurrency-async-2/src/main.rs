@@ -2,12 +2,14 @@ use std::time::Duration;
 
 fn main() {
     // spawn_async_task();
-    without_spawn_task();
-    // TODO: left off https://doc.rust-lang.org/book/ch17-02-concurrency-with-async.html#sending-data-between-two-tasks-using-message-passing
+    // without_spawn_task();
+    sending_data_btw_tasks_message();
 }
 
 fn spawn_async_task() {
     trpl::block_on(async {
+        // spawn an async task
+        // sort of like a light weight thread
         let handle = trpl::spawn_task(async {
             for i in 1..10 {
                 println!("hi number {i} from first task!");
@@ -51,4 +53,20 @@ fn without_spawn_task() {
 
         trpl::join(fut1, fut2).await;
     });
+}
+
+fn sending_data_btw_tasks_message() {
+    // sending data btw 2 tasks with message passing
+    // no need to spawn a separate thread/task
+    trpl::block_on(async {
+        let (tx, mut rx) = trpl::channel();
+        let val = String::from("hi");
+
+        tx.send(val).unwrap();
+
+        // waits until msg received or send side closes
+        let received = rx.recv().await.unwrap();
+        println!("received '{received}'");
+    });
+
 }
