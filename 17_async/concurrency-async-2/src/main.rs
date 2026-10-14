@@ -5,7 +5,8 @@ fn main() {
     // without_spawn_task();
     // sending_data_btw_tasks_message();
     // msg_received_immediately();
-    fix_msg_received_immediately();
+    // fix_msg_received_immediately();
+    join_multiple_futures();
 }
 
 fn spawn_async_task() {
@@ -101,11 +102,14 @@ fn msg_received_immediately() {
 fn fix_msg_received_immediately() {
     // msg_received_immediately - all messages come at same time
     // Fix: put tx & rx in own async block:
+    // But, this program still never exits!
 
     trpl::block_on(async {
         let (tx, mut rx) = trpl::channel();
 
-        let tx_fut = async {
+        // move here - so tx gets owned by async block
+        // then, once dropped, received side will finally be None
+        let tx_fut = async move {
             let vals = vec![
                 String::from("hi"),
                 String::from("from"),
@@ -129,5 +133,11 @@ fn fix_msg_received_immediately() {
 
         // fix: send/recv ran concurrently
         trpl::join(tx_fut, rx_fut).await;
+    });
+}
+
+fn join_multiple_futures() {
+    trpl::block_on(async {
+
     });
 }
