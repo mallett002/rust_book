@@ -7,6 +7,7 @@ fn main() {
     // msg_received_immediately();
     // fix_msg_received_immediately();
     join_multiple_futures();
+    // TODO: left off https://doc.rust-lang.org/book/ch17-03-more-futures.html
 }
 
 fn spawn_async_task() {
@@ -138,6 +139,51 @@ fn fix_msg_received_immediately() {
 
 fn join_multiple_futures() {
     trpl::block_on(async {
+        let (tx, mut rx) = trpl::channel();    
 
+        // clone tx to have multiple senders
+        let tx1 = tx.clone();
+
+        let tx1_fut = async move {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx1.send(val).unwrap();
+                // hand control to async runtime here:
+                // runtime looks for other tasks - rx_fut to process
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(val) = rx.recv().await {
+               println!("received '{val}'");
+            }
+        };
+
+        let tx_fut = async move {
+            let vals = vec![
+                String::from("more"),
+                String::from("messages"),
+                String::from("for"),
+                String::from("you"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                // hand control to async runtime here:
+                // runtime looks for other tasks - rx_fut to process
+                trpl::sleep(Duration::from_millis(1500)).await;
+            }
+        };
+
+        // join macro instead here
+        // order futures are awaited, not created that matters:
+        trpl::join!(tx1_fut, tx_fut, rx_fut);
     });
 }
