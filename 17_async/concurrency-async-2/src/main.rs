@@ -7,7 +7,6 @@ fn main() {
     // msg_received_immediately();
     // fix_msg_received_immediately();
     join_multiple_futures();
-    // TODO: left off https://doc.rust-lang.org/book/ch17-03-more-futures.html
 }
 
 fn spawn_async_task() {
