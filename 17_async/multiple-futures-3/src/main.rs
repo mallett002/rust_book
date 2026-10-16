@@ -8,7 +8,8 @@ fn main() {
     // ..futures from making progress (starving other futures)
 
     // starving_futures_demo();
-    fix_starving_futures();
+    // fix_starving_futures();
+    async_abstractions();
 }
 
 // mimics a long-running & blocking operation
@@ -88,5 +89,38 @@ fn fix_starving_futures() {
         };
 
         trpl::join(a, b).await;
+    });
+}
+
+async fn timeout<F: Future>(
+    future_to_try: F,
+    max_time: Duration,
+) -> Result<F::Output, Duration> {
+
+    // TODO: left off https://doc.rust-lang.org/book/ch17-03-more-futures.html#building-our-own-async-abstractions
+    // See The implementation of trpl::select is not fair
+
+    // select:
+    // - run both futures, the one passed in and a sleep for the max time
+    // - pick whichever finishes first, cancel other
+    match trpl::select(future_to_try, trpl::sleep(max_time)).await {
+        trpl::Either::Left(output) => Ok(output),
+        trpl::Either::Right(_) => Err(max_time),
+    }
+}
+
+fn async_abstractions() {
+    trpl::block_on(async {
+        let slow = async {
+            trpl::sleep(Duration::from_secs(5)).await;
+            "Finally finished"
+        };
+
+        match timeout(slow, Duration::from_secs(2)).await {
+            Ok(message) => println!("Suceeded with {message}"),
+            Err(duration) => {
+                println!("Failed after {} seconds", duration.as_secs())
+            }
+        }
     });
 }
