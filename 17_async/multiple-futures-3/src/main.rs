@@ -93,17 +93,14 @@ fn fix_starving_futures() {
 }
 
 async fn timeout<F: Future>(
-    future_to_try: F,
+    task: F,
     max_time: Duration,
 ) -> Result<F::Output, Duration> {
-
-    // TODO: left off https://doc.rust-lang.org/book/ch17-03-more-futures.html#building-our-own-async-abstractions
-    // See The implementation of trpl::select is not fair
-
     // select:
     // - run both futures, the one passed in and a sleep for the max time
     // - pick whichever finishes first, cancel other
-    match trpl::select(future_to_try, trpl::sleep(max_time)).await {
+    // select here isn't fair, tries task first
+    match trpl::select(task, trpl::sleep(max_time)).await {
         trpl::Either::Left(output) => Ok(output),
         trpl::Either::Right(_) => Err(max_time),
     }
