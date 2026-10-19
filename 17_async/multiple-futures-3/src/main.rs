@@ -7,6 +7,10 @@ fn main() {
     // If do stuff inside asynch block without an await point, that future will block other..
     // ..futures from making progress (starving other futures)
 
+    // The task is the work
+    // Thread is where the work is done
+    // async runtime is a scheduler
+
     // starving_futures_demo();
     // fix_starving_futures();
     async_abstractions();
