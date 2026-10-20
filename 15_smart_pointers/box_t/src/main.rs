@@ -1,5 +1,7 @@
 // Box<T> is a pointer stored on stack that points to data on the heap.
 // It's used when you want to allocate data on the heap rather than the stack.
+// Most common use-case is when some data's size isn't known at compile time, only run-time (like
+// a recursive data structure like a tree)
 // https://doc.rust-lang.org/book/ch15-01-box.html#using-boxt-to-point-to-data-on-the-heap
 
 // use a Box<T> here so the next value is actaully just a fixed size pointer on stack
