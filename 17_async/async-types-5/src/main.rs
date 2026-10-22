@@ -1,3 +1,4 @@
+use std::pin::{Pin, pin};
 use std::time::Duration;
 
 fn main() {
@@ -6,15 +7,14 @@ fn main() {
 
 fn join_many_futures() {
     // using trpl::join_all to await many unknown futures
-    //
 
     trpl::block_on(async {
-        let (tx, mut rx) = trpl::channel();    
+        let (tx, mut rx) = trpl::channel();
 
-        // clone tx to have multiple senders
+        // Clone tx to have multiple senders
         let tx1 = tx.clone();
 
-        let tx1_fut = async move {
+        let tx1_fut = pin!(async move {
             let vals = vec![
                 String::from("hi"),
                 String::from("from"),
@@ -24,19 +24,20 @@ fn join_many_futures() {
 
             for val in vals {
                 tx1.send(val).unwrap();
-                // hand control to async runtime here:
-                // runtime looks for other tasks - rx_fut to process
+
+                // Yield control to the async runtime here,
+                // allowing other tasks to make progress.
                 trpl::sleep(Duration::from_millis(500)).await;
             }
-        };
+        });
 
-        let rx_fut = async {
+        let rx_fut = pin!(async {
             while let Some(val) = rx.recv().await {
-               println!("received '{val}'");
+                println!("received '{val}'");
             }
-        };
+        });
 
-        let tx_fut = async move {
+        let tx_fut = pin!(async move {
             let vals = vec![
                 String::from("more"),
                 String::from("messages"),
@@ -46,25 +47,29 @@ fn join_many_futures() {
 
             for val in vals {
                 tx.send(val).unwrap();
-                // hand control to async runtime here:
-                // runtime looks for other tasks - rx_fut to process
+
+                // Yield control to the async runtime here,
+                // allowing other tasks to make progress.
                 trpl::sleep(Duration::from_millis(1500)).await;
             }
-        };
+        });
 
-        // Box bc Vec needs concrete type, but future may have diff concrete type
-        let futures: Vec<Box<dyn Future<Output = ()>>> = 
-            vec![Box::new(tx1_fut), Box::new(rx_fut), Box::new(tx_fut)];
+        // Pin the futures so they cannot move in memory if they contain self-references.
+        let futures: Vec<Pin<&mut dyn Future<Output = ()>>> = vec![tx1_fut, rx_fut, tx_fut];
 
-        // Put inside Pin type - ensure they don't move in memory
-        // Required bc `dyn Future<Output = ()>` needs to implement the Unpin trait
-        // Awaiting a future with .await implicitly pins it
-        // join_all returns JoinAll - requires all items implement Future trait
-        // Box<T> implements future only if T is a future that implements Unpin trait
-
-        // TODO: left off https://doc.rust-lang.org/book/ch17-05-traits-for-async.html
-        // See: "The trpl::join_all function returns a struct called JoinAll"
+        // The join_all takes ownership of the vector, but moving the
+        // pinned references doesn't move the underlying futures.
+        // Pin allows us to use futures that may not implement Unpin.
+        // Unpin means a value can safely be moved in memory.
+        // .await polls a future; it doesn't automatically pin every future.
+        // join_all requires each item to implement Future.
 
         trpl::join_all(futures).await;
+
+        // Unpin: The value can safely move around in memory.
+        // Pin: Guarantees a value won't move in memory after being pinned (if it isn't Unpin).
+        // Why? Some async futures contain references to their own data. Moving them could break those references.
+        // Your code: pin! pins each future so join_all can work with them safely.
+        // Remember: Pin is about memory location, not about whether a future is running or paused.
     });
 }
