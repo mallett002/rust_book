@@ -1,8 +1,10 @@
 use std::pin::{Pin, pin};
+use std::task::{Context, Poll};
 use std::time::Duration;
 
 fn main() {
     join_many_futures();
+    stream_trait();
 }
 
 fn join_many_futures() {
@@ -72,4 +74,42 @@ fn join_many_futures() {
         // Your code: pin! pins each future so join_all can work with them safely.
         // Remember: Pin is about memory location, not about whether a future is running or paused.
     });
+}
+
+// Example Stream trait def similar to one in futures crate:
+// Stream trait that combines Iterator and Future
+// Iterator that gets the next Item and returns it as an option
+// Future that polls for and returns a Poll enum to see if it's ready
+trait Stream {
+    type Item;
+
+    fn poll_next(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>
+    ) -> Poll<Option<Self::Item>>;
+}
+
+// StreamExt: uses await for the "next" method instead of poll_next (much nicer)
+// StreamExt automatically implemented for every trait that implements Stream
+trait StreamExt: Stream {
+    async fn next(&mut self) -> Option<Self::Item>
+    where
+        Self: Unpin;
+
+    // other methods...
+}
+
+fn stream_trait() {
+    // see traits above    
+
+    // Self::Item — the type of each value produced.
+    // Option — Some(item) means a value; None means the stream is finished.
+    // Poll — Ready(...) means the answer is available now; Pending means not ready yet.
+    // Pin<&mut Self> — allows polling without moving a stream that must stay in place.
+    // Context — lets the async runtime know how to wake the task when it should try again.
+
+    // Example: A stream of chat messages might produce "Hi", then "Hello", then "How are you?" over time, and finally None.
+    // You usually use .next().await through StreamExt instead of calling poll_next yourself.
+    // The rust book (https://doc.rust-lang.org/book/ch17-05-traits-for-async.html#the-stream-trait) ..
+    // ..defines a simplified Stream trait to explain the concept; the widely used version comes from the futures crate.
 }
