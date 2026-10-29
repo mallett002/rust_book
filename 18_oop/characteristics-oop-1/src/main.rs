@@ -47,13 +47,11 @@ mod tests {
     fn should_add_item() {
         let mut collection = AveragedCollection::new();
 
-        println!("{collection:?}");
-
-        assert_eq!(collection.average, 0.0);
+        assert_eq!(collection.average(), 0.0);
 
         collection.add(5);
         collection.add(7);
 
-        assert_eq!(collection.average, 6.0);
+        assert_eq!(collection.average(), 6.0);
     }
 }
