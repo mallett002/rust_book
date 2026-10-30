@@ -54,4 +54,22 @@ mod tests {
 
         assert_eq!(collection.average(), 6.0);
     }
+
+    #[test]
+    fn should_remove_item() {
+        let mut collection = AveragedCollection::new();
+
+        collection.add(5);
+        collection.add(7);
+        collection.add(9);
+        collection.add(134);
+
+        assert_eq!(collection.average(), 38.75);
+
+        let item = collection.remove().unwrap();
+
+        assert_eq!(item, 134);
+
+        assert_eq!(collection.average(), 7.0);
+    }
 }
