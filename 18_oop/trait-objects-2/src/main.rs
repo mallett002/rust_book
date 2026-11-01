@@ -18,6 +18,9 @@ fn main() {
     println!("{row:?}");
 
     // Using trait_objects_2 library to create a screen and call run to draw all components
+    // Screen's components only care that each component implements the Draw trait (has draw method)
+    // Can be a SelectBox or a Button, or any other type that implements the Draw method
+    // Trait objects offer this flexibility
     let screen = Screen {
         components: vec![
             Box::new(SelectBox {
@@ -34,10 +37,14 @@ fn main() {
                 height: 10,
                 label: String::from("OK"),
             }),
+            // Box::new(String::from("Won't work - doesn't implement Draw trait")),
         ],
     };
 
     screen.run();
+
+    // NOTE: trait object flexibilty incurs a performance cost.
+    // Uses dynamic dispatch (Rust doesn't know which method to call until at runtime)
 }
 
 // Implementing the trait - what a user might do with our library
