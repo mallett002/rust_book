@@ -29,11 +29,18 @@ where
 */
 
 impl Screen {
-    fn run(&self) {
+    pub fn run(&self) {
         for component in self.components.iter() {
             component.draw();
         }
     }
 }
 
-// TODO: left off https://doc.rust-lang.org/book/ch18-02-trait-objects.html#implementing-the-trait
+
+
+
+
+
+
+
+
