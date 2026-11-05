@@ -23,8 +23,15 @@ impl Post {
     // depending on which state it's currently in.
     // Self.state is Option bc we can't have an empty field on struct (take leaves a Option::None)
     pub fn request_review(&mut self) {
-        if let Some(s) = self.state.take() { // replace state temporarily with None
+        if let Some(s) = self.state.take() {
+            // replace state temporarily with None
             self.state = Some(s.request_review()) // new state goes in
+        }
+    }
+
+    pub fn approve(&mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.approve())
         }
     }
 }
@@ -33,6 +40,7 @@ impl Post {
 // Takes ownership of the boxed state - invalidating the old state
 trait State {
     fn request_review(self: Box<Self>) -> Box<dyn State>;
+    fn approve(self: Box<Self>) -> Box<dyn State>;
 }
 
 // Draft state - moves draft state into pending review state
@@ -41,12 +49,36 @@ impl State for Draft {
     fn request_review(self: Box<Self>) -> Box<dyn State> {
         Box::new(PendingReview {})
     }
+
+    fn approve(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
 }
 
-// Pending Review state - request review just keeps it in pending review
+// Pending Review state
 struct PendingReview {}
 impl State for PendingReview {
     fn request_review(self: Box<Self>) -> Box<dyn State> {
         self
     }
+
+    // approving from pending review state moves it into published
+    fn approve(self: Box<Self>) -> Box<dyn State> {
+        Box::new(Published {})
+    }
 }
+
+// Published state
+struct Published {}
+impl State for Published {
+    fn request_review(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+
+    fn approve(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+}
+
+// TODO: left off https://doc.rust-lang.org/book/ch18-03-oo-design-patterns.html#adding-approve-to-change-contents-behavior
+// See: "Now we need to update the content method on Post"
