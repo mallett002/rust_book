@@ -59,8 +59,16 @@ println!("x: {x}; y: {y}"); // works fine
 
 // Cannot add Copy trait if type or any of its contents implement the Drop trait
 ```
+## When to use ref vs actual value
 
+### Default: use a reference.
+- &T / &self → just read
+- &mut T / &mut self → edit, give it back
+- T / self → take or destroy, caller loses it
 
+*Only take ownership when you must. & first, escalate only when forced.*
+
+"So default to just &T. then go to &mut T if need to change it and give it back to caller, changed. Then just a T if you want the caller to lose it."
 
 
 

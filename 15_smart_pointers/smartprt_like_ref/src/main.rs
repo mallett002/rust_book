@@ -88,7 +88,6 @@ fn deref_coercion_mutable() {
     *       From &mut T to &U when `T: Deref<Target=U>`
     *           "You have a &mut T and T implements Deref to type U, you can get a &U transparently"
     *
-    *           - You can coerce to an imutable type, but never the other way around! (can't coerce
-    *           from immutable to mutable)
+    *           - You can coerce to an imutable type, but never the other way around! (can't coerce from immutable to mutable)
     */
 }

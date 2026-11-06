@@ -11,12 +11,15 @@ impl Post {
         }
     }
 
-    pub fn add_text(mut self, text: &str) {
+    pub fn add_text(&mut self, text: &str) {
         self.content.push_str(text);
     }
 
     pub fn content(&self) -> &str {
-        ""
+        // content method to delegate to method on its state
+        self.state.as_ref().unwrap().content(self)
+        // use as_ref() bc we need a ref (can't move state out of the borrowed &self)
+        // unwrap the option to get the actual state and call content on it, passing in the self
     }
 
     // State has internal method "request_review" that has different functionality
@@ -41,6 +44,11 @@ impl Post {
 trait State {
     fn request_review(self: Box<Self>) -> Box<dyn State>;
     fn approve(self: Box<Self>) -> Box<dyn State>;
+
+    // default implementation (for Draft and PendingReview states)
+    fn content<'a>(&self, _post: &'a Post) -> &'a str { // lifetime: returned content will be valid as long as the post is
+        ""
+    }
 }
 
 // Draft state - moves draft state into pending review state
@@ -78,7 +86,8 @@ impl State for Published {
     fn approve(self: Box<Self>) -> Box<dyn State> {
         self
     }
-}
 
-// TODO: left off https://doc.rust-lang.org/book/ch18-03-oo-design-patterns.html#adding-approve-to-change-contents-behavior
-// See: "Now we need to update the content method on Post"
+    fn content<'a>(&self, post: &'a Post) -> &'a str {
+        &post.content
+    }
+}
