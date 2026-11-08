@@ -9,6 +9,8 @@ fn main() {
     // showing content.
     // assert_eq!("", post.content()); 
 
-    // TODO: left off https://doc.rust-lang.org/book/ch18-03-oo-design-patterns.html#encoding-states-and-behavior-as-types
-    // See: "updated code in main is shown in Listing 18-21"
+    let post = post.request_review();
+    let post = post.approve();
+
+    assert_eq!("I ate salad for lunch today", post.content()); 
 }
