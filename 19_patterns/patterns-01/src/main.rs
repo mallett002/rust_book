@@ -12,6 +12,15 @@ fn main() {
 
     println!("");
     function_params();
+
+    println!("");
+    refutability();
+
+    println!("");
+    matching_literals();
+
+    println!("");
+    named_parameters();
 }
 
 fn if_let_else() {
@@ -79,4 +88,48 @@ fn function_params() {
     print_coordinates(&point);
 }
 
-// TODO: left off https://doc.rust-lang.org/book/ch19-02-refutability.html
+fn refutability() {
+    println!("refutability:");
+
+    // handle refutable patterns
+    let some_option_value: Option<i32> = None;
+
+    // have to handle else case for Some(val), bc refutable pattern (could be a None)
+    let Some(val): Option<i32> = some_option_value else {
+        return;
+    };
+
+
+    // Will give warning, rust knows this is an irrefutable pattern (x), so the else isn't needed
+    let x = 5 else {
+        return;
+    };
+}
+
+fn matching_literals() {
+    println!("matching_literals:");
+
+    let x = 1;
+
+    match x {
+        1 => println!("one"),
+        2 => println!("two"),
+        3 => println!("three"),
+        _ => println!("anything!"),
+    }
+}
+
+fn named_parameters() {
+    println!("named_parameters:");
+
+    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) => println!("Got 50"),
+        Some(y) => println!("Matched, y = {y}"), // matches here (matches any value inside a Some)
+        _ => println!("Default case, x = {x:?}"),
+    };
+
+    println!("At the end: x = {x:?}, y = {y}"); // named param out of scope now, so y = 10
+}
