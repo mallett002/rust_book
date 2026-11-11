@@ -22,7 +22,13 @@ fn main() {
     println!("");
     named_parameters();
 
-    // TODO: left off https://doc.rust-lang.org/book/ch19-03-pattern-syntax.html#matching-multiple-patterns
+    println!("");
+    multiple_pattern_matching();
+
+    println!("");
+    range_matching();
+
+    // TODO: left off https://doc.rust-lang.org/book/ch19-03-pattern-syntax.html#destructuring-to-break-apart-values
 }
 
 fn if_let_else() {
@@ -134,4 +140,36 @@ fn named_parameters() {
     };
 
     println!("At the end: x = {x:?}, y = {y}"); // named param out of scope now, so y = 10
+}
+
+fn multiple_pattern_matching() {
+    println!("multiple_pattern_matching:");
+
+    let x = 1;
+
+    match x {
+        1 | 2 => println!("one or two"),
+        3 => println!("three"),
+        _ => println!("all other numbers"),
+    }
+}
+
+fn range_matching() {
+    println!("range_matching:");
+    
+    let x = 5;
+
+    match x {
+        1..=5 => println!("one through 5"),
+        _ => println!("something else"),
+    }
+
+    // range matching with chars
+    let x = 'c';
+
+    match x {
+        'a'..='j' => println!("early ASCII letter"),
+        'k'..='z' => println!("late ASCII letter"),
+        _ => println!("something else"),
+    }
 }
