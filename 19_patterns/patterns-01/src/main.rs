@@ -28,7 +28,8 @@ fn main() {
     println!("");
     range_matching();
 
-    // TODO: left off https://doc.rust-lang.org/book/ch19-03-pattern-syntax.html#destructuring-to-break-apart-values
+    println!("");
+    destructuring();
 }
 
 fn if_let_else() {
@@ -107,7 +108,6 @@ fn refutability() {
         return;
     };
 
-
     // Will give warning, rust knows this is an irrefutable pattern (x), so the else isn't needed
     let x = 5 else {
         return;
@@ -156,7 +156,7 @@ fn multiple_pattern_matching() {
 
 fn range_matching() {
     println!("range_matching:");
-    
+
     let x = 5;
 
     match x {
@@ -171,5 +171,34 @@ fn range_matching() {
         'a'..='j' => println!("early ASCII letter"),
         'k'..='z' => println!("late ASCII letter"),
         _ => println!("something else"),
+    }
+}
+
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn destructuring() {
+    println!("destructuring:");
+
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x: a, y: b } = p;
+
+    assert_eq!(0, a);
+    assert_eq!(7, b);
+
+    // shorthand, can just use x,y:
+    let Point { x, y } = p;
+
+    assert_eq!(0, x);
+    assert_eq!(7, y);
+
+    // matching literals:
+    match p {
+        Point { x, y: 0 } => println!("on x axis at {x}"), // matches if y is 0
+        Point { x: 0, y } => println!("on y axis at {y}"), // mathes if x is 0
+        _ => println!("on neither axis: ({x}, {y})"), // matches if both not 0 (all other cases)
     }
 }
