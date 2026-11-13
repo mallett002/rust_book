@@ -30,6 +30,11 @@ fn main() {
 
     println!("");
     destructuring();
+
+    println!("");
+    enum_matching();
+
+    // TODO: left off https://doc.rust-lang.org/book/ch19-03-pattern-syntax.html#nested-structs-and-enums
 }
 
 fn if_let_else() {
@@ -200,5 +205,25 @@ fn destructuring() {
         Point { x, y: 0 } => println!("on x axis at {x}"), // matches if y is 0
         Point { x: 0, y } => println!("on y axis at {y}"), // mathes if x is 0
         _ => println!("on neither axis: ({x}, {y})"), // matches if both not 0 (all other cases)
+    }
+}
+
+enum Message {
+    Quit,
+    Move {x: i32, y: i32},
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn enum_matching() {
+    println!("enum_matching:");
+
+    let msg = Message::ChangeColor(0, 160, 255);
+
+    match msg {
+        Message::Quit => println!("Nothing to match on with Quit"),
+        Message::Move {x, y} => println!("moved in x direction {x} and y direction {y}"),
+        Message::Write(val)=> println!("wrote {val}"),
+        Message::ChangeColor(r, g, b)=> println!("changed color to RGB({r},{g},{b})"),
     }
 }
