@@ -34,7 +34,13 @@ fn main() {
     println!("");
     enum_matching();
 
-    // TODO: left off https://doc.rust-lang.org/book/ch19-03-pattern-syntax.html#nested-structs-and-enums
+    println!("");
+    nested_enum_matching();
+
+    println!("");
+    nested_enum_matching();
+
+
 }
 
 fn if_let_else() {
@@ -226,4 +232,37 @@ fn enum_matching() {
         Message::Write(val)=> println!("wrote {val}"),
         Message::ChangeColor(r, g, b)=> println!("changed color to RGB({r},{g},{b})"),
     }
+}
+
+enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+
+enum NestedMessage {
+    Quit,
+    Move {x: i32, y: i32},
+    Write(String),
+    ChangeColor(Color),
+}
+
+fn nested_enum_matching() {
+    println!("nested_enum_matching:");
+
+    let msg = NestedMessage::ChangeColor(Color::Hsv( 0, 160, 255 ));
+
+    // if it's an RGB variant, goes in first arm
+    // if it's an HSV variant, goes in second arm
+
+    match msg {
+        NestedMessage::ChangeColor(Color::Rgb(r, g, b)) => {
+            println!("changed color to RGB({r},{g},{b})");
+        }
+        NestedMessage::ChangeColor(Color::Hsv(h, s, v)) => {
+            println!("changed color to HSV({h},{s},{v})");
+        }
+        _ => (),
+    }
+
+
 }
