@@ -38,9 +38,7 @@ fn main() {
     nested_enum_matching();
 
     println!("");
-    nested_enum_matching();
-
-
+    struct_tuple_matching();
 }
 
 fn if_let_else() {
@@ -185,6 +183,7 @@ fn range_matching() {
     }
 }
 
+#[derive(Debug)]
 struct Point {
     x: i32,
     y: i32,
@@ -216,7 +215,7 @@ fn destructuring() {
 
 enum Message {
     Quit,
-    Move {x: i32, y: i32},
+    Move { x: i32, y: i32 },
     Write(String),
     ChangeColor(i32, i32, i32),
 }
@@ -228,9 +227,9 @@ fn enum_matching() {
 
     match msg {
         Message::Quit => println!("Nothing to match on with Quit"),
-        Message::Move {x, y} => println!("moved in x direction {x} and y direction {y}"),
-        Message::Write(val)=> println!("wrote {val}"),
-        Message::ChangeColor(r, g, b)=> println!("changed color to RGB({r},{g},{b})"),
+        Message::Move { x, y } => println!("moved in x direction {x} and y direction {y}"),
+        Message::Write(val) => println!("wrote {val}"),
+        Message::ChangeColor(r, g, b) => println!("changed color to RGB({r},{g},{b})"),
     }
 }
 
@@ -241,7 +240,7 @@ enum Color {
 
 enum NestedMessage {
     Quit,
-    Move {x: i32, y: i32},
+    Move { x: i32, y: i32 },
     Write(String),
     ChangeColor(Color),
 }
@@ -249,7 +248,7 @@ enum NestedMessage {
 fn nested_enum_matching() {
     println!("nested_enum_matching:");
 
-    let msg = NestedMessage::ChangeColor(Color::Hsv( 0, 160, 255 ));
+    let msg = NestedMessage::ChangeColor(Color::Hsv(0, 160, 255));
 
     // if it's an RGB variant, goes in first arm
     // if it's an HSV variant, goes in second arm
@@ -263,6 +262,15 @@ fn nested_enum_matching() {
         }
         _ => (),
     }
+}
 
+fn struct_tuple_matching() {
+    println!("struct_tuple_matching:");
 
+    // (tuple, struct)
+    let stuff = ((3, 10), Point { x: 3, y: -10 });
+    let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
+
+    println!("{stuff:?}");
+    println!("( feet: {feet}, inches: {inches} ), Point({x}, {y})");
 }
