@@ -39,6 +39,10 @@ fn main() {
 
     println!("");
     struct_tuple_matching();
+
+    println!("");
+    ignoring_values_in_pattern();
+
 }
 
 fn if_let_else() {
@@ -273,4 +277,42 @@ fn struct_tuple_matching() {
 
     println!("{stuff:?}");
     println!("( feet: {feet}, inches: {inches} ), Point({x}, {y})");
+}
+
+fn foo(_: i32, y: i32) {
+    println!("This code only uses param y: {y}");
+}
+
+fn ignoring_values_in_pattern() {
+    println!("ignoring_values_in_pattern:");
+
+    // ignore entire value with "_"
+    foo(5, 6);
+
+    // ignore parts of value with nested "_"
+    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
+
+    // allows only updating setting value if not yet set, or to unset it:
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) => {
+            println!("Can't override an existing customized value");
+        },
+        _ => {
+            setting_value = new_setting_value; 
+        }
+    }
+
+    println!("Setting: {setting_value:?}");
+
+    // ignoring particular values
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, _, third, _, fifth) => {
+            println!("some numbers: {first}, {third}, {fifth}");
+        }
+    }
+
+    // TODO: left off https://doc.rust-lang.org/book/ch19-03-pattern-syntax.html#an-unused-variable-by-starting-its-name-with-_
 }
