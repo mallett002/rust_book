@@ -48,6 +48,9 @@ fn main() {
 
     println!("");
     ignore_with_dots();
+
+    println!("");
+    match_guards();
 }
 
 fn if_let_else() {
@@ -368,4 +371,19 @@ fn ignore_with_dots() {
     // match numbers {
     //     (.., second, ..) => println!("Some numbers: {second}"),
     // }
+}
+
+fn match_guards() {
+    println!("match_guards:");
+
+    // additional if condition after pattern - used to determine branch execution as well
+    // downside: compiler doesn't check for exhaustiveness
+
+    let num = Some(4);
+
+    match num {
+        Some(x) if x % 2 == 0 => println!("x is even: {x}"),
+        Some(x) => println!("x is not even: {x}"),
+        None => ()
+    }
 }
