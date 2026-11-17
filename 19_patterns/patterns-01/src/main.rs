@@ -43,6 +43,12 @@ fn main() {
     println!("");
     ignoring_values_in_pattern();
 
+    println!("");
+    underscores();
+
+    println!("");
+    ignore_with_dots();
+
 }
 
 fn if_let_else() {
@@ -313,6 +319,55 @@ fn ignoring_values_in_pattern() {
             println!("some numbers: {first}, {third}, {fifth}");
         }
     }
+}
 
-    // TODO: left off https://doc.rust-lang.org/book/ch19-03-pattern-syntax.html#an-unused-variable-by-starting-its-name-with-_
+fn underscores() {
+    println!("underscores:");
+
+    let s = Some(String::from("Hello!"));
+
+    // this will cause an error:
+    // if let Some(_s) = s {
+    //     println!("found a string");
+    // }
+    //
+    // s moved into _s above
+    // println!("{s:?}");
+
+    // doesn't actually bind to the value
+    if let Some(_) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+}
+
+struct MyPoint {
+    x: i32,
+    y: i32,
+    z: i32,
+}
+
+fn ignore_with_dots() {
+    println!("ignore_with_dots:");
+
+    let origin = MyPoint { x: 0, y: 0, z: 0 };
+
+    // use ".." to only match on x:
+    match origin {
+        MyPoint {x, ..} => println!("x is {x}"),
+    }
+
+
+    // ".." expands as far as it needs to:
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, .., last) => println!("Some numbers: {first}, {last}"),
+    }
+
+    // ambiguous - won't work:
+    // match numbers {
+    //     (.., second, ..) => println!("Some numbers: {second}"),
+    // }
 }
