@@ -51,6 +51,9 @@ fn main() {
 
     println!("");
     match_guards();
+
+    println!("");
+    aroba_binging(); // @
 }
 
 fn if_let_else() {
@@ -154,6 +157,10 @@ fn named_parameters() {
     let x = Some(5);
     let y = 10;
 
+    println!("At start: x = {x:?}, y = {y}"); // named param out of scope now, so y = 10
+
+    // y in match arm shadows y above
+    // but once scope finishes, y goes back to what it was (10)
     match x {
         Some(50) => println!("Got 50"),
         Some(y) => println!("Matched, y = {y}"), // matches here (matches any value inside a Some)
@@ -161,6 +168,8 @@ fn named_parameters() {
     };
 
     println!("At the end: x = {x:?}, y = {y}"); // named param out of scope now, so y = 10
+
+    // See match_guards function below for how to fix using match guards
 }
 
 fn multiple_pattern_matching() {
@@ -384,6 +393,53 @@ fn match_guards() {
     match num {
         Some(x) if x % 2 == 0 => println!("x is even: {x}"),
         Some(x) => println!("x is not even: {x}"),
-        None => ()
+        None => (),
+    }
+
+    println!("\nfixing named parameters:");
+    // Fixing named_parameters with match guards:
+    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) => println!("Got 50"),
+        Some(n) if n == y => println!("Matched, n = {n}"), // use match guard to match on y
+        _ => println!("Default case, x = {x:?}"),
+    };
+
+    println!("At the end: x = {x:?}, y = {y}"); // named param out of scope now, so y = 10
+
+    // Multiple patterns with match guard
+    println!("\nMultiple patterns with match guard:");
+    let x = 4;
+    let y = false;
+
+    match x {
+        4 | 5 | 6 if y => println!("Yes!"), // "(4 | 5 | 6) if y => ...": the match guard gets applied to each pattern, not just the 6
+        _ => println!("No."),
+    }
+}
+
+enum MyMessage {
+    Hello { id: i32 },
+}
+
+fn aroba_binging() {
+    println!("aroba_binging:");
+
+    // "@" lets us create a variable that holds a value while we're testing it for a pattern match
+
+    let msg = MyMessage::Hello { id: 5 };
+
+    match msg {
+        MyMessage::Hello { id: id @ 3..=7 } => { // us @ to create new var to use
+            println!("Found an id in range {id}");
+        }
+        MyMessage::Hello { id: 10..=12 } => {
+            println!("Found an id out of range");
+        }
+        MyMessage::Hello { id } => {
+            println!("Found some other id: {id}");
+        }
     }
 }
