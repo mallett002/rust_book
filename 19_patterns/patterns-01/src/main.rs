@@ -159,8 +159,6 @@ fn named_parameters() {
     let x = Some(5);
     let y = 10;
 
-    println!("At start: x = {x:?}, y = {y}"); // named param out of scope now, so y = 10
-
     // y in match arm shadows y above
     // but once scope finishes, y goes back to what it was (10)
     match x {
@@ -290,11 +288,9 @@ fn nested_enum_matching() {
 fn struct_tuple_matching() {
     println!("struct_tuple_matching:");
 
-    // (tuple, struct)
-    let stuff = ((3, 10), Point { x: 3, y: -10 });
+    // (tuple, struct) = ..
     let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
 
-    println!("{stuff:?}");
     println!("( feet: {feet}, inches: {inches} ), Point({x}, {y})");
 }
 
@@ -314,7 +310,7 @@ fn ignoring_values_in_pattern() {
 
     // allows only updating setting value if not yet set, or to unset it:
     match (setting_value, new_setting_value) {
-        (Some(_), Some(_)) => {
+        (Some(_), Some(_)) => { // if both already set, don't allow override
             println!("Can't override an existing customized value");
         }
         _ => {
@@ -366,7 +362,7 @@ fn ignore_with_dots() {
 
     let origin = MyPoint { x: 0, y: 0, z: 0 };
 
-    // use ".." to only match on x:
+    // use ".." to only match on x: similiar to using "_" but you don't have to know all places to put the "_" as it handles "the rest"
     match origin {
         MyPoint { x, .. } => println!("x is {x}"),
     }
