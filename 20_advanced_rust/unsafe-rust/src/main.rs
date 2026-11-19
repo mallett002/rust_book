@@ -56,7 +56,8 @@ fn dereferencing_raw_pointer() {
 //     ( &mut values[..mid], &mut values[mid..] )
 // }
 
-// implement something like split_at_mut that will work (need unsafe code)
+// Implement something like split_at_mut that will work (need unsafe code).
+// The function itself isn't unsafe and can be called from regular rust code (abstraction around unsafe rust).
 fn my_split_at_mut_fixed_with_unsafe_code(values: &mut [i32], mid: usize) -> (&mut [i32], &mut [i32]) {
     let len = values.len();
     let ptr: *mut i32 = values.as_mut_ptr(); // get raw pointer to slice
@@ -70,6 +71,15 @@ fn my_split_at_mut_fixed_with_unsafe_code(values: &mut [i32], mid: usize) -> (&m
             slice::from_raw_parts_mut(ptr.add(mid), len - mid),
         )
     }
+}
+
+fn misuse_of_unsafe_code() {
+    let address = 0x01234usize; // just get a randon memory address
+    let ptr = address as *mut i32; // get mutable pointer
+
+    let values: &[i32] = unsafe {
+        slice::from_raw_parts_mut(ptr, 1000)
+    };
 }
 
 fn creating_abscraction_over_unsafe_code() {
