@@ -11,6 +11,9 @@ fn main() {
 
     dereferencing_raw_pointer();
     creating_abscraction_over_unsafe_code();
+    calling_external_code();
+
+    // TODO: left off https://doc.rust-lang.org/book/ch20-01-unsafe-rust.html#accessing-or-modifying-a-mutable-static-variable
 }
 
 fn dereferencing_raw_pointer() {
@@ -89,4 +92,27 @@ fn creating_abscraction_over_unsafe_code() {
 
     println!("first part: {first_set:?}");
     println!("second part: {second_set:?}");
+}
+
+
+// "C" here means use the C application binary interface (ABI)
+// some functions in ABIs are safe, can mark them with the safe keyword - don't need unsafe blocks to use
+// https://doc.rust-lang.org/book/ch20-01-unsafe-rust.html#using-extern-functions-to-call-external-code
+unsafe extern "C" { 
+    fn abs(input: i32) -> i32;
+}
+
+fn calling_external_code() {
+    // Allow rust to interact with code written in another language
+    // FFI (Foreign Function Interface)
+    // More info on this: https://doc.rust-lang.org/reference/items/external-blocks.html#abi
+
+    unsafe {
+        println!("absolute value of -3 according to c: {}", abs(-3));
+    }
+}
+
+#[unsafe(no_mangle)] // don't let rust change the func name when compiled
+pub extern "C" fn call_from_c() {
+    println!("Just called a rust function from C!");
 }
