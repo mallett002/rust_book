@@ -178,16 +178,16 @@ fn unsafe_traits() {
     // traits are unsafe if they have some invariant that the compiler can't confirm
     let box_a = MyBox::new(10);
 
-    // spawn a new thread - std::marker::Send used here
+    // thread::spawn requires Send because move transfers box_a to the new thread
     thread::spawn(move || println!("{}", box_a.get()))
         .join()
         .unwrap();
 
     let box_b = MyBox::new(20);
 
-    // scope a new thread - std::marker::Sync used here
-    // box_b.get borrows
-    thread::scope(|s| { // create a temporary scope - allows borrowing box_b and &box_b accross threads
+    // scoped threads can borrow box_b; Sync is needed because &box_b is shared
+    thread::scope(|s| {
+        // scope waits for threads before box_b is dropped
         s.spawn(|| println!("{}", box_b.get()));
         s.spawn(|| println!("{}", box_b.get()));
     });
