@@ -1,3 +1,4 @@
+use std::thread;
 use std::slice;
 
 fn main() {
@@ -140,10 +141,54 @@ fn mutable_static_variables() {
     }
 }
 
+// unsafe traits:
 unsafe trait Foo {}
-
 unsafe impl Foo for i32 {}
+
+
+
+// Example needing to mark Send & Sync for unsafe traits
+struct MyBox {
+    ptr: *mut i32,
+}
+
+impl MyBox {
+    fn new(value: i32) -> Self {
+        Self {
+            ptr: Box::into_raw(Box::new(value)),
+        }
+    }
+
+    fn get(&self) -> i32 {
+        unsafe { *self.ptr }
+    }
+}
+
+// assert MyBox satisfies Send/Sync
+unsafe impl Send for MyBox {} // Send means a value can be moved to another thread
+unsafe impl Sync for MyBox {} // Sync means a value can be borrowed (shared by reference) accross threads
+
+impl Drop for MyBox {
+    fn drop(&mut self) {
+        unsafe { drop(Box::from_raw(self.ptr)) }
+    }
+}
 
 fn unsafe_traits() {
     // traits are unsafe if they have some invariant that the compiler can't confirm
+    let box_a = MyBox::new(10);
+
+    // spawn a new thread - std::marker::Send used here
+    thread::spawn(move || println!("{}", box_a.get()))
+        .join()
+        .unwrap();
+
+    let box_b = MyBox::new(20);
+
+    // scope a new thread - std::marker::Sync used here
+    // box_b.get borrows
+    thread::scope(|s| { // create a temporary scope - allows borrowing box_b and &box_b accross threads
+        s.spawn(|| println!("{}", box_b.get()));
+        s.spawn(|| println!("{}", box_b.get()));
+    });
 }
