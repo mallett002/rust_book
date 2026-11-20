@@ -15,6 +15,7 @@ fn main() {
     calling_external_code();
     mutable_static_variables();
     unsafe_traits();
+    // TODO: left off https://doc.rust-lang.org/book/ch20-01-unsafe-rust.html#accessing-fields-of-a-union
 }
 
 fn dereferencing_raw_pointer() {
