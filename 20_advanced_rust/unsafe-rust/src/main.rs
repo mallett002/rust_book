@@ -12,8 +12,8 @@ fn main() {
     dereferencing_raw_pointer();
     creating_abscraction_over_unsafe_code();
     calling_external_code();
-
-    // TODO: left off https://doc.rust-lang.org/book/ch20-01-unsafe-rust.html#accessing-or-modifying-a-mutable-static-variable
+    mutable_static_variables();
+    unsafe_traits();
 }
 
 fn dereferencing_raw_pointer() {
@@ -115,4 +115,35 @@ fn calling_external_code() {
 #[unsafe(no_mangle)] // don't let rust change the func name when compiled
 pub extern "C" fn call_from_c() {
     println!("Just called a rust function from C!");
+}
+
+// static = global in rust
+static SCREAMING_SNAKE_CASE: &str = "Hello, World!";
+
+static mut COUNTER: u32 = 0;
+
+/// SAFETY: Calling this from more than a single thread is unsafe and is undefined behavior.
+/// You *must* call it from a single thread at a time.
+unsafe fn add_to_count(inc: u32) {
+    unsafe {
+        COUNTER += inc;
+    }
+}
+
+// #[allow(static_mut_refs)]
+fn mutable_static_variables() {
+    // mutable static variables are unsafe in rust
+    unsafe {
+        // SAFETY: This is only called from a single thread - main.
+        add_to_count(3);
+        println!("Counter: {}", *(&raw const COUNTER)); // required to use this through a raw pointer or use #[allow(static_mut_refs)] (currently commented out at top of func)
+    }
+}
+
+unsafe trait Foo {}
+
+unsafe impl Foo for i32 {}
+
+fn unsafe_traits() {
+    // traits are unsafe if they have some invariant that the compiler can't confirm
 }
