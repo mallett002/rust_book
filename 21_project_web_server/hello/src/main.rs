@@ -27,6 +27,8 @@ fn handle_connection(mut stream: TcpStream) {
     //     ("HTTP/1.1 404 NOT FOUND", "404.html")
     // };
 
+    // TODO: left off https://doc.rust-lang.org/book/ch21-02-multithreaded.html#improving-throughput-with-a-thread-pool
+
     // simulate a slow response with the /sleep endpoint
     let (status_line, filename) = match request_line.as_str() {
         "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "hello.html"),
