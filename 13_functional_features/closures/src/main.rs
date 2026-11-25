@@ -133,7 +133,7 @@ fn move_ownership() {
 /* Closure traits:
  - FnOnce - Moves captured values out of its body - can only be called once (like .unwrap_or_else on Option)
  - FnMut - Can be called multiple times and may mutate the value that is captured in closure
- - Fn - called more than once & don't mutate captured values (implements FnMut - any Fn is also
+ - Fn - called more than once & doesn't mutate captured values (implements FnMut - any Fn is also
  Fn mut)
 
  Fn ⊂ FnMut ⊂ FnOnce: ("⊂" means "is subset of") (ex: cat ⊂ feline ⊂ mammal)

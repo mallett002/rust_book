@@ -3,14 +3,18 @@ use std::{
     io::{BufRead, BufReader, Write},
     net::{TcpListener, TcpStream}, thread, time::Duration,
 };
+use hello::ThreadPool;
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let pool = ThreadPool::new(4);
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
 
-        handle_connection(stream);
+        pool.execute(|| {
+            handle_connection(stream);
+        });
     }
 }
 
@@ -26,8 +30,6 @@ fn handle_connection(mut stream: TcpStream) {
     // } else {
     //     ("HTTP/1.1 404 NOT FOUND", "404.html")
     // };
-
-    // TODO: left off https://doc.rust-lang.org/book/ch21-02-multithreaded.html#improving-throughput-with-a-thread-pool
 
     // simulate a slow response with the /sleep endpoint
     let (status_line, filename) = match request_line.as_str() {
