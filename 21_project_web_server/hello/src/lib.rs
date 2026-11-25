@@ -1,11 +1,13 @@
+use std::thread;
+
 pub struct ThreadPool {
-    // thread_count: u32
+    threads: Vec<thread::JoinHandle<()>>,
 }
 
-struct PoolCreationError {
-    size: usize,
-    message: String,
-}
+// struct PoolCreationError {
+//     size: usize,
+//     message: String,
+// }
 
 impl ThreadPool {
     /// Create a new ThreadPool.
@@ -16,19 +18,30 @@ impl ThreadPool {
     ///
     /// The `new` function will panic if the size is zero.
     pub fn new(size: usize) -> ThreadPool {
-        ThreadPool::build(size).unwrap_or_else(|e| panic!("{}", e.message))
-    }
+        // ThreadPool::build(size).unwrap_or_else(|e| panic!("{}", e.message))
 
-    fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {
-        if size <= 0 {
-            return Err(PoolCreationError {
-                size,
-                message: String::from("Pool size required to be larger than zero"),
-            });
+        assert!(size > 0);
+
+        let mut threads = Vec::with_capacity(size);
+
+        for _ in 0..size {
+            // create some threads and store them in the vector
         }
 
-        Ok(ThreadPool {})
+        ThreadPool { threads }
+        // TODO: left off https://doc.rust-lang.org/book/ch21-02-multithreaded.html#sending-code-from-the-threadpool-to-a-thread
     }
+
+    // fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {
+    //     if size <= 0 {
+    //         return Err(PoolCreationError {
+    //             size,
+    //             message: String::from("Pool size required to be larger than zero"),
+    //         });
+    //     }
+    //
+    //     Ok(ThreadPool {})
+    // }
 
     // FnOnce: The closure can be called exactly once.
     // Send: The closure can safely be transferred to another thread.
@@ -42,8 +55,6 @@ impl ThreadPool {
     where
         F: FnOnce() + Send + 'static,
     {
-        // call the closure
-        // f();
+
     }
-    // TODO: left off https://doc.rust-lang.org/book/ch21-02-multithreaded.html#creating-space-to-store-the-threads
 }
