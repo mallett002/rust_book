@@ -1,7 +1,14 @@
 use std::thread;
 
 pub struct ThreadPool {
-    threads: Vec<thread::JoinHandle<()>>,
+    workers: Vec<Worker>,
+}
+
+// Worker picks up code that needs ran, and runs the code in its thread
+// Worker has a thread and waits for code to run
+struct Worker {
+    id: usize,
+    thread: thread::JoinHandle<()>,
 }
 
 // struct PoolCreationError {
@@ -24,12 +31,13 @@ impl ThreadPool {
 
         let mut threads = Vec::with_capacity(size);
 
-        for _ in 0..size {
-            // create some threads and store them in the vector
+        for id in 0..size {
+            let worker = Worker::new(id);
+
+            threads.push(worker);
         }
 
         ThreadPool { threads }
-        // TODO: left off https://doc.rust-lang.org/book/ch21-02-multithreaded.html#sending-code-from-the-threadpool-to-a-thread
     }
 
     // fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {
@@ -56,5 +64,16 @@ impl ThreadPool {
         F: FnOnce() + Send + 'static,
     {
 
+    }
+}
+
+impl Worker {
+    fn new (id: usize) -> Worker {
+        let thread = thread::spawn(|| {});
+
+        Worker {
+            id,        
+            thread,
+        }
     }
 }
