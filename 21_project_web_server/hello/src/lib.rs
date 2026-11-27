@@ -1,11 +1,27 @@
-use std::thread;
+use std::{
+    sync::{Arc, Mutex, mpsc},
+    thread,
+};
+
+// TODO: left off https://doc.rust-lang.org/book/ch21-02-multithreaded.html#implementing-the-execute-method
+
+// Job has a closure to run
+// Workers pull jobs from threadpool
+// Worker gets the closure from the job and passes it as the closure for the spawn
+
+// 1. The ThreadPool creates a channel and holds on to the sender.
+// 2. Each Worker holds on to the receiver.
+// 3. We’ll create a new Job struct that will hold the closures we want to send down the channel.
+// 4. The ThreadPool's execute method sends the job it wants to execute through the sender.
+// 5. In its thread, the Worker loops over its receiver and executes the closures of any jobs it receives.
 
 pub struct ThreadPool {
     workers: Vec<Worker>,
+    sender: mpsc::Sender<Job>,
 }
 
-// Worker picks up code that needs ran, and runs the code in its thread
-// Worker has a thread and waits for code to run
+struct Job {}
+
 struct Worker {
     id: usize,
     thread: thread::JoinHandle<()>,
@@ -29,15 +45,19 @@ impl ThreadPool {
 
         assert!(size > 0);
 
-        let mut threads = Vec::with_capacity(size);
+        let (sender, receiver) = mpsc::channel();
+
+        // Receiver = worker. Multiple workers pulling from queue. 1 worker at a time can mutate
+        // receiver. A message processed only once
+        let receiver = Arc::new(Mutex::new(receiver));
+
+        let mut workers = Vec::with_capacity(size);
 
         for id in 0..size {
-            let worker = Worker::new(id);
-
-            threads.push(worker);
+            workers.push(Worker::new(id, Arc::clone(&receiver)));
         }
 
-        ThreadPool { threads }
+        ThreadPool { workers, sender }
     }
 
     // fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {
@@ -63,17 +83,15 @@ impl ThreadPool {
     where
         F: FnOnce() + Send + 'static,
     {
-
     }
 }
 
 impl Worker {
-    fn new (id: usize) -> Worker {
-        let thread = thread::spawn(|| {});
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+        let thread = thread::spawn(|| {
+            receiver;
+        });
 
-        Worker {
-            id,        
-            thread,
-        }
+        Worker { id, thread }
     }
 }
