@@ -20,13 +20,14 @@ pub struct ThreadPool {
     sender: mpsc::Sender<Job>,
 }
 
-struct Job {}
+type Job = Box<dyn FnOnce() + Send + 'static>;
 
 struct Worker {
     id: usize,
     thread: thread::JoinHandle<()>,
 }
 
+// Deprecated:
 // struct PoolCreationError {
 //     size: usize,
 //     message: String,
@@ -41,6 +42,7 @@ impl ThreadPool {
     ///
     /// The `new` function will panic if the size is zero.
     pub fn new(size: usize) -> ThreadPool {
+        // Deprecated:
         // ThreadPool::build(size).unwrap_or_else(|e| panic!("{}", e.message))
 
         assert!(size > 0);
@@ -60,6 +62,7 @@ impl ThreadPool {
         ThreadPool { workers, sender }
     }
 
+    // Deprecated:
     // fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {
     //     if size <= 0 {
     //         return Err(PoolCreationError {
@@ -79,17 +82,34 @@ impl ThreadPool {
     // 'static does NOT mean the closure lives for the full program.
     // It means any references it contains must be 'static.
     // In practice, this often means the closure owns its captured data.
+    //
+    // The execute just sends the job (function) to the queue (channel)
     pub fn execute<F>(&self, f: F)
     where
         F: FnOnce() + Send + 'static,
     {
+        let job = Box::new(f);
+
+        self.sender.send(job).unwrap();
     }
 }
 
 impl Worker {
     fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
-        let thread = thread::spawn(|| {
-            receiver;
+        let thread = thread::spawn(move || {
+            loop {
+                // Mutex: allows only 1 worker at a time is trying to request a job
+
+                let job = receiver
+                    .lock()
+                    .expect("Failure to lock receiver. Potentially in poisoned state")
+                    .recv() // pause execution until we get a job to process
+                    .expect("Failure to receive jobs. Perhaps the sender thread shut down");
+
+                println!("Worker {id} got a job; executing.");
+
+                job();
+            }
         });
 
         Worker { id, thread }
