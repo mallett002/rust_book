@@ -3,7 +3,7 @@ use std::{
     thread,
 };
 
-// TODO: left off https://doc.rust-lang.org/book/ch21-02-multithreaded.html#implementing-the-execute-method
+// TODO: left off https://doc.rust-lang.org/book/ch21-03-graceful-shutdown-and-cleanup.html
 
 // Job has a closure to run
 // Workers pull jobs from threadpool
